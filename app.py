@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session, redirect
 from pymongo import MongoClient
+from flask_socketio import SocketIO, send
 
 
 client = MongoClient('mongodb+srv://Kdaniel06:Dani060401$@cluster0.t10iglg.mongodb.net/?retryWrites=true&w=majority')
@@ -8,11 +9,12 @@ collection = db['User']
 
 app = Flask(__name__)
 app.secret_key = 'testing'
+socketio = SocketIO(app)
 
 @app.route('/')
 def home():
     # Página de inicio
-    return render_template('index.html')
+    return render_template('login.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -53,5 +55,5 @@ def dashboard():
 
 
 if __name__ == '__main__':
-    print("Hola a todos")
+    socketio.run(app)
     app.run()

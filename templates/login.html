@@ -1,17 +1,16 @@
+<link rel="stylesheet" href="static/login.css">
+
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Iniciar sesión</title>
-</head>
-<body>
-    <h1>Iniciar sesión</h1>
-    {% if error %}
+{% if error %}
         <p>{{ error }}</p>
-    {% endif %}
-    <form method="POST" action="/login">
-        <input type="email" name="email" placeholder="Correo electrónico" required><br><br>
-        <input type="password" name="password" placeholder="Contraseña" required><br><br>
-        <button type="submit">Iniciar sesión</button>
-    </form>
-</body>
-</html>
+{% endif %}
+<form method="POST" action="/login">
+    <h1> Log In</h1>
+    <input type="email" name="email" placeholder="Correo electrónico" required/>
+    <input type="password" name="password" placeholder="Contraseña" required/>
+    <button class="btn" type="submit">Log in</button>
+</form>
+  
+<footer>
+<h5> </a></h5>
+</footer>
