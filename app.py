@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, flash
 from pymongo import MongoClient
 from flask_socketio import SocketIO, send
 
@@ -21,7 +21,7 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-
+        
         user = collection.find_one({'email': email, 'password': int(password)})
         # Imprimir el usuario que encuentra, si no existe muestra None
         # print(f"User: {user}")
@@ -40,7 +40,7 @@ def login():
             return redirect('/dashboard')
         else:
             # Credenciales inválidas
-            return render_template('login.html', error='Credenciales inválidas')
+            return render_template('login.html', error='error')
 
     return render_template('login.html')
 
@@ -51,7 +51,8 @@ def dashboard():
         return render_template('dashboard.html', email=session['email'], name=session['name'])
     else:
         # Usuario no autenticado, redirigir al inicio de sesión
-        return redirect('/login')
+        return redirect('/login',  error='')
+    
 
 
 if __name__ == '__main__':

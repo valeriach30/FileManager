@@ -1,8 +1,11 @@
 <link rel="stylesheet" href="static/login.css">
 
 <!DOCTYPE html>
-{% if error %}
-        <p>{{ error }}</p>
+{% if error == 'error' %}
+    <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        Credenciales invalidas
+    </div>
 {% endif %}
 <form method="POST" action="/login">
     <h1> Log In</h1>
