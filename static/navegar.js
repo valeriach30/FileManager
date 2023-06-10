@@ -2,12 +2,18 @@ $(document).ready(function() {
 
     // ------------------------------------- ARCHIVOS -------------------------------------
     $("#archivo").click(function(event) {
-        
+        var archivoElement = document.getElementById("archivo");
+        var valor = archivoElement.dataset.value;
+        var values = Object.values(valor);
+
+        alert(valor)
+        alert(values)
         // Obtener el contenido del archivo (puedes hacer una llamada AJAX aquí para obtenerlo)
         var fileContent = "Este es el contenido del archivo."; // Aquí debes reemplazar con tu lógica de obtención del contenido del archivo
-
+        
         // Mostrar el contenido del archivo en el pop-up
         $("#fileContent").text(fileContent);
+        $("#sizeP").text(valor.size);
         
         $("#popup1").fadeIn();
         

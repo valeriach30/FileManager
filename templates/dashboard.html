@@ -66,12 +66,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for archivo in archivos%}
                                     <tr>
                                         <td class="type"><i class="fa fa-file-text-o text-primary"></i></td>
-                                        <td class="name truncate"><a class="button" href="#popup1" id="archivo">Notas.txt</a></td>
-                                        <td class="date">Sep 23, 2015</td>
-                                        <td class="size">18 KB</td>
+                                        <td class="name truncate"><a class="button" href="#popup1" id="archivo" data-value="{{archivo}}">{{archivo.name}}</a></td>
+                                        <td class="date">{{archivo.updated}}</td>
+                                        <td class="size">{{archivo.size}}</td>
                                     </tr>
+                                    {% endfor%}
                                     <tr>
                                         <td class="type"><i class="fa fa-folder text-primary"></i></td>
                                         <td class="name truncate"><a href="#" id="carpeta">Sistemas Operativos</a></td>
@@ -86,10 +88,10 @@
                                     <div class="content">
                                         <h2>Nombre del archivo</h2>
                                         <p id="fileContent"></p>
-                                        <p style="color: rgb(180, 172, 172);">Tamaño: </p>
-                                        <p style="color: rgb(180, 172, 172);">Fecha de creacion: </p>
-                                        <p style="color: rgb(180, 172, 172);"">Fecha de modificación: </p>
-                                        <p style="color: rgb(180, 172, 172);"">Usuario: </p>
+                                        <p id="sizeP" style="color: rgb(180, 172, 172);">Tamaño: </p>
+                                        <p id="fechaCP" style="color: rgb(180, 172, 172);">Fecha de creacion: </p>
+                                        <p id="fechaMP" style="color: rgb(180, 172, 172);"">Fecha de modificación: </p>
+                                        <p id="usuarioP" style="color: rgb(180, 172, 172);"">Usuario: </p>
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Edit"><i class="fa fa-pencil-square"></i></button>
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Copy1"><i class="fa fa-desktop"></i></button>
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Copy2"><i class="fa fa-cloud-download"></i></button>

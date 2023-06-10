@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, flash
 from pymongo import MongoClient
 from flask_socketio import SocketIO, send
+import json
 
 
 client = MongoClient('mongodb+srv://Kdaniel06:Dani060401$@cluster0.t10iglg.mongodb.net/?retryWrites=true&w=majority')
@@ -10,6 +11,9 @@ collection = db['User']
 app = Flask(__name__)
 app.secret_key = 'testing'
 socketio = SocketIO(app)
+
+folders = []
+archivos = []
 
 @app.route('/')
 def home():
@@ -47,13 +51,38 @@ def login():
 @app.route('/dashboard')
 def dashboard():
     if 'email' in session:
+        # Obtener carpetas y archivos del usuario
+        obtenerFileSystem()
+
         # Usuario autenticado, mostrar dashboard
-        return render_template('dashboard.html', email=session['email'], name=session['name'])
+        return render_template('dashboard.html', email=session['email'], name=session['name'], 
+                               folders=folders, archivos=archivos)
     else:
         # Usuario no autenticado, redirigir al inicio de sesión
         return redirect('/login',  error='')
     
+# Obtener la estructura del usuario
+def obtenerFileSystem():
+    # Cargar el JSON
+    nombreArchivo = session['name'] + '.json'
+    with open(nombreArchivo) as json_file:
+        data = json.load(json_file)
 
+    # Obtener carpetas y archivos
+    for item in data['files']:
+        if item['type'] == 'folder':
+            folders.append(item)
+        elif item['type'] == 'archivo':
+            archivos.append(item)
+
+    # Imprimir los resultados
+    print("Folders:")
+    for folder in folders:
+        print(folder['name'])
+
+    print("\nArchivos:")
+    for archivo in archivos:
+        print(archivo['name'])
 
 if __name__ == '__main__':
     socketio.run(app)
