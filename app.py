@@ -12,8 +12,8 @@ app = Flask(__name__)
 app.secret_key = 'testing'
 socketio = SocketIO(app)
 
-folders = []
-archivos = []
+currentRoute = [' / raiz']
+
 
 @app.route('/')
 def home():
@@ -52,22 +52,91 @@ def login():
 def dashboard():
     if 'email' in session:
         # Obtener carpetas y archivos del usuario
-        obtenerFileSystem()
-
+        # Cargar el JSON
+        nombreArchivo = session['name'] + '.json'
+        with open(nombreArchivo) as json_file:
+            data = json.load(json_file)
+        
+        folders, archivos = obtenerFileSystem(data)
         # Usuario autenticado, mostrar dashboard
         return render_template('dashboard.html', email=session['email'], name=session['name'], 
-                               folders=folders, archivos=archivos)
+                               folders=folders, archivos=archivos, rutas = currentRoute)
     else:
         # Usuario no autenticado, redirigir al inicio de sesión
         return redirect('/login',  error='')
 
-
-# Obtener la estructura del usuario
-def obtenerFileSystem():
+@app.route('/subcarpeta')
+def subcarpeta():
     # Cargar el JSON
     nombreArchivo = session['name'] + '.json'
     with open(nombreArchivo) as json_file:
         data = json.load(json_file)
+
+    # Obtener nombre de la carpeta actual
+    carpeta = request.args.get('carpeta')
+
+    # Actualizar ruta
+    currentRoute.append(" / " + carpeta) 
+    
+    # Obtener archivos y subcarpetas
+    archivos, folders = buscar_carpeta(data, carpeta)
+
+    # Redirigir
+    return render_template('dashboard.html', email=session['email'], name=session['name'], 
+                               folders=folders, archivos=archivos, rutas = currentRoute)
+
+
+@app.route('/rutaAnterior')
+def rutaAnterior():
+
+    # Cargar el JSON
+    nombreArchivo = session['name'] + '.json'
+    with open(nombreArchivo) as json_file:
+        data = json.load(json_file)
+        
+    # Obtener nombre de la carpeta actual
+    carpeta = request.args.get('ruta')
+    
+
+    
+    if(len(currentRoute) != 1):
+        # Actualizar ruta
+        currentRoute.pop()
+        if(len(currentRoute) != 1):
+            # Obtener archivos y subcarpetas
+            archivos, folders = buscar_carpeta(data, carpeta[3:])
+        else:
+            folders, archivos = obtenerFileSystem(data)
+    else:
+        folders, archivos = obtenerFileSystem(data)
+
+    # Redirigir
+    return render_template('dashboard.html', email=session['email'], name=session['name'], 
+                               folders=folders, archivos=archivos, rutas = currentRoute)
+
+def buscar_carpeta(json_data, nombre_carpeta):
+    archivos_encontrados = []
+    carpetas_encontradas = []
+
+    def buscar_recursivo(data):
+        for item in data['files']:
+            if item['type'] == 'folder' and item['name'] == nombre_carpeta:
+                for archivo in item['files']:
+                    if archivo['type'] == 'archivo':
+                        archivos_encontrados.append(archivo)
+                for carpeta in item['files']:
+                    if carpeta['type'] == 'folder':
+                        carpetas_encontradas.append(carpeta)
+            elif item['type'] == 'folder':
+                buscar_recursivo(item)
+
+    buscar_recursivo(json_data)
+    return archivos_encontrados, carpetas_encontradas
+
+# Obtener la estructura del usuario
+def obtenerFileSystem(data):
+    folders = []
+    archivos = []
 
     # Obtener carpetas y archivos
     for item in data['files']:
@@ -77,6 +146,8 @@ def obtenerFileSystem():
         elif item['type'] == 'archivo':
             if(item not in archivos):
                 archivos.append(item)
+
+    return folders, archivos
 
 if __name__ == '__main__':
     socketio.run(app)

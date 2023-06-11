@@ -39,7 +39,9 @@
                         <h2 class="title">My Drive</h2>
                         <ol class="breadcrumb text-big container-p-x py-3 m-0">
                             <li class="breadcrumb-item">
-                                <a href="/dashboard">home</a>
+                                {% for ruta in rutas%}
+                                <a href="/rutaAnterior?ruta={{ruta}}">{{ruta}}</a>
+                                {% endfor%}
                             </li>
                         </ol>
                     </div>
@@ -69,17 +71,19 @@
                                     {% for archivo in archivos%}
                                     <tr>
                                         <td class="type"><i class="fa fa-file-text-o text-primary"></i></td>
-                                        <td class="name truncate"><a class="button" href="#popup1" id="archivo" data-value="{{archivo}}">{{archivo.name}}</a></td>
+                                        <td class="name truncate"><a class="button archivo" href="#popup1" id="{{loop.index}}" data-value="{{archivo}}">{{archivo.name}}</a></td>
                                         <td class="date">{{archivo.updated}}</td>
                                         <td class="size">{{archivo.size}}</td>
                                     </tr>
                                     {% endfor%}
+                                    {% for carpeta in folders%}
                                     <tr>
                                         <td class="type"><i class="fa fa-folder text-primary"></i></td>
-                                        <td class="name truncate"><a href="#" id="carpeta">Sistemas Operativos</a></td>
-                                        <td class="date">Feb 07, 2015</td>
+                                        <td class="name truncate"><a class="button carpeta" href="#" id="carp{{loop.index}}" data-value="{{carpeta}}">{{carpeta.name}}</a></td>
+                                        <td class="date">{{carpeta.updated}}</td>
                                         <td class="size">--</td>
                                     </tr>
+                                    {% endfor%}
                             </table>
                             <!--POP UP-->
                             <div id="popup1" class="overlay">
