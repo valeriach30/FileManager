@@ -60,7 +60,8 @@ def dashboard():
     else:
         # Usuario no autenticado, redirigir al inicio de sesión
         return redirect('/login',  error='')
-    
+
+
 # Obtener la estructura del usuario
 def obtenerFileSystem():
     # Cargar el JSON
@@ -74,15 +75,6 @@ def obtenerFileSystem():
             folders.append(item)
         elif item['type'] == 'archivo':
             archivos.append(item)
-
-    # Imprimir los resultados
-    print("Folders:")
-    for folder in folders:
-        print(folder['name'])
-
-    print("\nArchivos:")
-    for archivo in archivos:
-        print(archivo['name'])
 
 if __name__ == '__main__':
     socketio.run(app)

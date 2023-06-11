@@ -4,16 +4,17 @@ $(document).ready(function() {
     $("#archivo").click(function(event) {
         var archivoElement = document.getElementById("archivo");
         var valor = archivoElement.dataset.value;
-        var values = Object.values(valor);
-
-        alert(valor)
-        alert(values)
-        // Obtener el contenido del archivo (puedes hacer una llamada AJAX aquí para obtenerlo)
-        var fileContent = "Este es el contenido del archivo."; // Aquí debes reemplazar con tu lógica de obtención del contenido del archivo
+        var jsonStringFixed = valor.replace(/'/g, '"');
+        
+        var jsonObj = JSON.parse(jsonStringFixed);
         
         // Mostrar el contenido del archivo en el pop-up
-        $("#fileContent").text(fileContent);
-        $("#sizeP").text(valor.size);
+        $("#nombre").text(jsonObj.name);
+        $("#fileContent").text(jsonObj.content);
+        $("#sizeP").text(jsonObj.size);
+        $("#fechaCP").text(jsonObj.created_at);
+        $("#fechaMP").text(jsonObj.updated);
+        $("#usuarioP").text(jsonObj.user);
         
         $("#popup1").fadeIn();
         
@@ -39,7 +40,7 @@ $(document).ready(function() {
         breadcrumb.empty();
         
         // Agrega el nuevo elemento al breadcrumb
-        breadcrumb.append("<li class='breadcrumb-item'><a href='#'>home</a></li>");
+        breadcrumb.append("<li class='breadcrumb-item'><a href='/dashboard'>home</a></li>");
         breadcrumb.append(sistemasOperativos);
 
         // Limpia el contenido de la tabla

@@ -39,7 +39,7 @@
                         <h2 class="title">My Drive</h2>
                         <ol class="breadcrumb text-big container-p-x py-3 m-0">
                             <li class="breadcrumb-item">
-                                <a href="javascript:void(0)">home</a>
+                                <a href="/dashboard">home</a>
                             </li>
                         </ol>
                     </div>
@@ -86,12 +86,17 @@
                                 <div class="popup">
                                     <a class="close" href="#">&times;</a>
                                     <div class="content">
-                                        <h2>Nombre del archivo</h2>
+                                        <h2 id="nombre">Nombre del archivo</h2>
+                                        <p>Contenido: </p>
                                         <p id="fileContent"></p>
-                                        <p id="sizeP" style="color: rgb(180, 172, 172);">Tamaño: </p>
-                                        <p id="fechaCP" style="color: rgb(180, 172, 172);">Fecha de creacion: </p>
-                                        <p id="fechaMP" style="color: rgb(180, 172, 172);"">Fecha de modificación: </p>
-                                        <p id="usuarioP" style="color: rgb(180, 172, 172);"">Usuario: </p>
+                                        <p>Tamaño: </p>
+                                        <p id="sizeP" style="color: rgb(180, 172, 172);"></p>
+                                        <p>Fecha de creacion: </p>
+                                        <p id="fechaCP" style="color: rgb(180, 172, 172);"></p>
+                                        <p>Fecha de modificación: </p>
+                                        <p id="fechaMP" style="color: rgb(180, 172, 172);"></p>
+                                        <p>Usuario: </p>
+                                        <p id="usuarioP" style="color: rgb(180, 172, 172);"></p>
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Edit"><i class="fa fa-pencil-square"></i></button>
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Copy1"><i class="fa fa-desktop"></i></button>
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Copy2"><i class="fa fa-cloud-download"></i></button>
