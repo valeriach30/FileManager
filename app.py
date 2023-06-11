@@ -72,9 +72,11 @@ def obtenerFileSystem():
     # Obtener carpetas y archivos
     for item in data['files']:
         if item['type'] == 'folder':
-            folders.append(item)
+            if(item not in folders):
+                folders.append(item)
         elif item['type'] == 'archivo':
-            archivos.append(item)
+            if(item not in archivos):
+                archivos.append(item)
 
 if __name__ == '__main__':
     socketio.run(app)
