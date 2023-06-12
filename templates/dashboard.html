@@ -15,8 +15,7 @@
 
     <script src="static/navegar.js"></script>
 </head>
-</head>
-
+<title>Dashboard</title>
 <div class="container">
     <div class="view-account">
         <section class="module">
@@ -28,8 +27,10 @@
                         <img class="img-profile img-circle img-responsive center-block" src="https://d29fhpw069ctt2.cloudfront.net/icon/image/84587/preview.svg" alt="">
                         <ul class="meta list list-unstyled">
                             <li class="name">{{ name }} 
-                                <h5><label class="label label-info">{{ email }}</label></h5>
+                                <h5><label class="label label-info" id="email" value="{{ email }}">{{ email }}</label></h5>
                             </li>
+                            <p id="name" data-value="{{ name }}"></p>
+                            <p id="rutas" data-value="{{ rutas }}"></p>
                         </ul>
                     </div>
                 </div>
@@ -40,7 +41,7 @@
                         <ol class="breadcrumb text-big container-p-x py-3 m-0">
                             <li class="breadcrumb-item">
                                 {% for ruta in rutas%}
-                                <a href="/rutaAnterior?ruta={{ruta}}">{{ruta}}</a>
+                                <a href="/rutaAnterior?ruta={{ruta}}&rutas={{rutas}}&email={{ email }}&name={{ name }}">{{ruta}}</a>
                                 {% endfor%}
                             </li>
                         </ol>
@@ -49,7 +50,6 @@
                         <div class="actions">
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Add"><i class="fa fa-plus"></i></button>
-                                <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Refresh"><i class="fa fa-refresh"></i></button>
                                 <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Archive"><i class="fa fa-archive"></i></button>
                                 <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Delete"><i class="fa fa-trash-o"></i></button>
                             </div>

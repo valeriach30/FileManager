@@ -25,15 +25,32 @@ $(document).ready(function() {
     // ------------------------------------- CARPETAS -------------------------------------
     
     $(".carpeta").click(function(event) {
-        
+        // Obtener datos
+        var emailElement = document.getElementById("email");
+        var emailValue = emailElement.innerHTML;
+
+        var userElement = document.getElementById("name");
+        var userValue = userElement.getAttribute("data-value");
+
+        var rutaElement = document.getElementById("rutas");
+        var rutaValue = rutaElement.getAttribute("data-value");
+
         // Obtener carpeta
         var carpetaId = event.target.id;
         var archivoElement = document.getElementById(carpetaId);
         var valor = archivoElement.dataset.value;
         var jsonStringFixed = valor.replace(/'/g, '"');
         var carpetaJson = JSON.parse(jsonStringFixed);
-        window.location = '/subcarpeta?carpeta=' + carpetaJson.name;
+        
+        // Construir los parámetros de consulta
+        var params = new URLSearchParams();
+        params.append('carpeta', carpetaJson.name);
+        params.append('email', emailValue);
+        params.append('name', userValue);
+        params.append('ruta', rutaValue);
 
+        var url = '/subcarpeta?' + params.toString();
+        window.location.href = url;
     });
 });
   

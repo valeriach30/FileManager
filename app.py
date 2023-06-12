@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, session, redirect, flash
+from flask import Flask, render_template, request, session, redirect
 from pymongo import MongoClient
 from flask_socketio import SocketIO, send
+from flask_session import Session
 import json
+import secrets
 
 
 client = MongoClient('mongodb+srv://Kdaniel06:Dani060401$@cluster0.t10iglg.mongodb.net/?retryWrites=true&w=majority')
@@ -9,11 +11,13 @@ db = client['Users']
 collection = db['User']
 
 app = Flask(__name__)
-app.secret_key = 'testing'
+app.secret_key = secrets.token_hex(16)
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_COOKIE_HTTPONLY'] = False
+Session(app)
+
 socketio = SocketIO(app)
-
-currentRoute = [' / raiz']
-
 
 @app.route('/')
 def home():
@@ -38,10 +42,8 @@ def login():
         if user:
             # Usuario autenticado
             userName = user['name']
-            print(userName)
-            session['email'] = email
-            session['name'] = userName
-            return redirect('/dashboard')
+            currentRoute = [' / raiz']
+            return redirect('/dashboard?email=' + email + '&name=' + userName + '&route=' + str(currentRoute))
         else:
             # Credenciales inválidas
             return render_template('login.html', error='error')
@@ -50,16 +52,21 @@ def login():
 
 @app.route('/dashboard')
 def dashboard():
-    if 'email' in session:
+    # Obtener nombre de la carpeta actual
+    email = request.args.get('email')
+    userName = request.args.get('name')
+    currentRoute = eval(request.args.get('route'))
+    
+    if email:
         # Obtener carpetas y archivos del usuario
         # Cargar el JSON
-        nombreArchivo = session['name'] + '.json'
+        nombreArchivo = userName + '.json'
         with open(nombreArchivo) as json_file:
             data = json.load(json_file)
         
         folders, archivos = obtenerFileSystem(data)
         # Usuario autenticado, mostrar dashboard
-        return render_template('dashboard.html', email=session['email'], name=session['name'], 
+        return render_template('dashboard.html', email=email, name=userName, 
                                folders=folders, archivos=archivos, rutas = currentRoute)
     else:
         # Usuario no autenticado, redirigir al inicio de sesión
@@ -67,8 +74,13 @@ def dashboard():
 
 @app.route('/subcarpeta')
 def subcarpeta():
+    
+    email = request.args.get('email')
+    userName = request.args.get('name')
+    currentRoute = eval(request.args.get('ruta'))
+    
     # Cargar el JSON
-    nombreArchivo = session['name'] + '.json'
+    nombreArchivo = userName + '.json'
     with open(nombreArchivo) as json_file:
         data = json.load(json_file)
 
@@ -80,24 +92,26 @@ def subcarpeta():
     
     # Obtener archivos y subcarpetas
     archivos, folders = buscar_carpeta(data, carpeta)
-
+    
     # Redirigir
-    return render_template('dashboard.html', email=session['email'], name=session['name'], 
+    return render_template('dashboard.html', email=email, name=userName, 
                                folders=folders, archivos=archivos, rutas = currentRoute)
 
 
 @app.route('/rutaAnterior')
 def rutaAnterior():
 
+    email = request.args.get('email')
+    userName = request.args.get('name')
+    currentRoute = eval(request.args.get('rutas'))
+
     # Cargar el JSON
-    nombreArchivo = session['name'] + '.json'
+    nombreArchivo = userName + '.json'
     with open(nombreArchivo) as json_file:
         data = json.load(json_file)
         
     # Obtener nombre de la carpeta actual
     carpeta = request.args.get('ruta')
-    
-
     
     if(len(currentRoute) != 1):
         # Actualizar ruta
@@ -111,7 +125,7 @@ def rutaAnterior():
         folders, archivos = obtenerFileSystem(data)
 
     # Redirigir
-    return render_template('dashboard.html', email=session['email'], name=session['name'], 
+    return render_template('dashboard.html', email=email, name=userName, 
                                folders=folders, archivos=archivos, rutas = currentRoute)
 
 def buscar_carpeta(json_data, nombre_carpeta):
@@ -150,5 +164,4 @@ def obtenerFileSystem(data):
     return folders, archivos
 
 if __name__ == '__main__':
-    socketio.run(app)
     app.run()
