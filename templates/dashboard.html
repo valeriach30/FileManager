@@ -53,9 +53,9 @@
                     <div class="content-utilities">
                         <div class="actions">
                             <div class="btn-group" role="group">
-                                <button id="addButton" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Add"><i class="fa fa-plus"></i></button>
-                                <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Archive"><i class="fa fa-archive"></i></button>
-                                <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Delete"><i class="fa fa-trash-o"></i></button>
+                                <button id="addButton" type="button" class="btn btn-default " data-toggle="tooltip" data-placement="bottom" title="Add" onclick="agregarArchivo()"><i class="fa fa-plus"></i></button>
+                                <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Archive" onclick="agregarCarpeta()"><i class="fa fa-archive"></i></button>
+                                <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Delete" onclick="eliminarCarpeta()"><i class="fa fa-trash-o"></i></button>
                             </div>
                         </div>
                     </div>
@@ -118,13 +118,45 @@
                                 </div>
                             </div>
                             <!--POP UP 2 CREAR ARCHIVO-->
-                            <div id="popup2" class="overlay">
-                                <div class="popup">
-                                    <a class="close" href="#">&times;</a>
-                                    <div class="content">
-                                        <h2>Agregar archivo</h2>
-                                    </div>
+                            <div class="form-popup" id="myForm">
+                                <div class="form-container">
+                                  <h2>Crear archivo</h2>
+                              
+                                  <label for="nombre"><b>Nombre</b></label>
+                                  <input type="text" placeholder="Ingresar nombre del archivo" id="nombre1" required>
+                              
+                                  <label for="contenido"><b>Contenido</b></label>
+                                  <input type="text" placeholder="Ingresar contenido del archivo" id="contenido" required>
+                              
+                                  <label for="extension"><b>Extension</b></label>
+                                  <input type="text" placeholder="Ingresar extension del archivo" id="extension" required>
+                              
+                                  <button type="submit" class="btn" onclick="enviarForm()">Crear</button>
+                                  <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
                                 </div>
+                            </div>
+                            <!--POP UP 3 CREAR CARPETA-->
+                            <div class="form-popup" id="formCarpeta">
+                                <form action="enviarForm()" class="form-container">
+                                  <h2>Crear carpeta</h2>
+                              
+                                  <label for="nombre"><b>Nombre</b></label>
+                                  <input type="text" placeholder="Ingresar nombre de la carpeta" id="nombre2" required>
+                              
+                                  <button type="submit" class="btn">Crear</button>
+                                  <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
+                                </form>
+                            </div>
+                            <!--POP UP 4 ELIMINAR CARPETA-->
+                            <div class="form-popup" id="formElimCarpeta">
+                                <form action="enviarForm()" class="form-container">
+                                  <h2>Eliminar carpeta</h2>
+                              
+                                  <label for="nombre"><b>Seguro que desea eliminar esta carpeta? Todo el contenido dentro de ella se borrara tambien</b></label>
+                                  
+                                  <button type="submit" class="btn">Eliminar</button>
+                                  <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -135,3 +167,54 @@
 </div>
 </body>
 </html>
+<script>
+    function agregarArchivo() {
+        document.getElementById("myForm").style.display = "block";
+    }
+    function agregarCarpeta() {
+        document.getElementById("formCarpeta").style.display = "block";
+    }
+    function eliminarCarpeta() {
+        document.getElementById("formElimCarpeta").style.display = "block";
+    }
+    function enviarForm(){
+        
+        // Obtener datos
+        var emailElement = document.getElementById("email");
+        var emailValue = emailElement.innerHTML;
+
+        var userElement = document.getElementById("name");
+        var userValue = userElement.getAttribute("data-value");
+
+        var rutaElement = document.getElementById("rutas");
+        var contenido = document.getElementById("contenido").value;
+        var nombre = document.getElementById("nombre1").value;
+        var extension = document.getElementById("extension").value;
+        var rutasElement = document.getElementById("rutas");
+        
+        // Obtener la ruta actual
+        var rutasValue = rutasElement.getAttribute("data-value");
+        rutasValue = rutasValue.replace(/[\[\]']+/g, '');
+        var rutasArray = rutasValue.split(",");
+        var ultimaRuta = rutasArray[rutasArray.length - 1];
+        // Construir los parámetros de consulta
+        var params = new URLSearchParams();
+        params.append('email', emailValue);
+        params.append('name', userValue);
+        params.append('rutas', rutasArray);
+        params.append('ruta', ultimaRuta);
+        params.append('nombre', nombre);
+        params.append('contenido', contenido);
+        params.append('extension', extension);
+        
+        var url = '/crearArchivo?' + params.toString();
+        window.location.href = url;
+    }
+
+    function closeForm() {
+        document.getElementById("myForm").style.display = "none";
+        document.getElementById("formCarpeta").style.display = "none";
+        document.getElementById("formElimCarpeta").style.display = "none";
+    }
+
+</script>

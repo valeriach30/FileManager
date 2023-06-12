@@ -19,6 +19,8 @@ Session(app)
 
 socketio = SocketIO(app)
 
+# ---------------------- INICIAR SESION ----------------------
+
 @app.route('/')
 def home():
     # Página de inicio
@@ -42,13 +44,15 @@ def login():
         if user:
             # Usuario autenticado
             userName = user['name']
-            currentRoute = [' / raiz']
+            currentRoute = [' / home']
             return redirect('/dashboard?email=' + email + '&name=' + userName + '&route=' + str(currentRoute))
         else:
             # Credenciales inválidas
             return render_template('login.html', error='error')
 
     return render_template('login.html')
+
+# ---------------------- DASHBOARD ----------------------
 
 @app.route('/dashboard')
 def dashboard():
@@ -58,19 +62,21 @@ def dashboard():
     currentRoute = eval(request.args.get('route'))
     
     if email:
-        # Obtener carpetas y archivos del usuario
-        # Cargar el JSON
-        nombreArchivo = userName + '.json'
-        with open(nombreArchivo) as json_file:
-            data = json.load(json_file)
         
+        # Cargar el JSON
+        data = obtenerJson(userName)
+        
+        # Obtener carpetas y archivos del usuario
         folders, archivos = obtenerFileSystem(data)
+        
         # Usuario autenticado, mostrar dashboard
         return render_template('dashboard.html', email=email, name=userName, 
                                folders=folders, archivos=archivos, rutas = currentRoute)
     else:
         # Usuario no autenticado, redirigir al inicio de sesión
         return redirect('/login',  error='')
+
+# ---------------------- RUTAS NAVEGACION ----------------------
 
 @app.route('/subcarpeta')
 def subcarpeta():
@@ -80,9 +86,7 @@ def subcarpeta():
     currentRoute = eval(request.args.get('ruta'))
     
     # Cargar el JSON
-    nombreArchivo = userName + '.json'
-    with open(nombreArchivo) as json_file:
-        data = json.load(json_file)
+    data = obtenerJson(userName)
 
     # Obtener nombre de la carpeta actual
     carpeta = request.args.get('carpeta')
@@ -105,23 +109,17 @@ def rutaAnterior():
     userName = request.args.get('name')
     currentRoute = eval(request.args.get('rutas'))
 
-    # Cargar el JSON
-    nombreArchivo = userName + '.json'
-    with open(nombreArchivo) as json_file:
-        data = json.load(json_file)
+    data = obtenerJson(userName)
         
     # Obtener nombre de la carpeta actual
     carpeta = request.args.get('ruta')
-    print(carpeta)    
+     
     # Determinar el indice de la ruta seleccionada
     indice = currentRoute.index(carpeta) 
-    
 
     if(len(currentRoute) != 1):
         # Actualizar ruta
-        print(currentRoute)
         currentRoute = currentRoute[:indice+1]
-        print(currentRoute)
         if(len(currentRoute) != 1):
             # Obtener archivos y subcarpetas
             archivos, folders = buscar_carpeta(data, carpeta[3:])
@@ -133,6 +131,83 @@ def rutaAnterior():
     # Redirigir
     return render_template('dashboard.html', email=email, name=userName, 
                                folders=folders, archivos=archivos, rutas = currentRoute)
+
+# ---------------------- FUNCIONES CREAR ----------------------
+
+@app.route('/crearArchivo')
+def crearArchivo():
+    nombreArchivo = request.args.get('nombre')
+    contenido = request.args.get('contenido')
+    extension = request.args.get('extension')
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    carpeta = request.args.get('ruta')    
+    data = obtenerJson(userName)
+    
+    if(len(rutas) != 1):
+        # Agregar el archivo al json
+        #jsonD = json.loads(data)
+        nuevoArchivo(nombreArchivo, contenido, extension, userName, carpeta[4:], data)
+        archivos, folders = buscar_carpeta(data, carpeta[4:])
+    else:
+        folders, archivos = obtenerFileSystem(data)
+    
+    return render_template('dashboard.html', email=email, name=userName, 
+                               folders=folders, archivos=archivos, rutas = rutas)
+    
+
+@app.route('/crearCarpeta')
+def crearCarpeta():
+    print("carpeta creada")
+
+@app.route('/eliminarCarpeta')
+def eliminarCarpeta():
+    print("carpeta eliminada")
+
+# ---------------------- FUNCIONES COMPLEMENTARIAS ----------------------
+def nuevoArchivo(nombreArchivo, contenido, extension, usuario, rutaCarpeta, data):
+    carpeta = buscarContenido(data["files"], rutaCarpeta)
+    if carpeta is not None:
+        nuevo_archivo = {
+            "name": nombreArchivo,
+            "type": "archivo",
+            "size": "0 KB",  
+            "created_at": "2023-06-20",
+            "updated": "2023-06-20",  
+            "user": usuario,
+            "content": contenido
+        }
+        # Agrega el nuevo archivo a la carpeta encontrada
+        carpeta["files"].append(nuevo_archivo)
+
+        # Convierte el objeto Python de vuelta a JSON
+        updated_json = json.dumps(data)
+
+        # Actualiza el archivo local con el nuevo JSON
+        nombreArchivo = usuario + '.json'
+        with open(nombreArchivo, "w") as file:
+            file.write(updated_json)
+
+# Función recursiva para encontrar contenido de una carpeta
+def buscarContenido(files, ruta_carpeta):
+    for file in files:
+        if file["name"] == ruta_carpeta and file["type"] == "folder":
+            return file
+        if file["type"] == "folder" and "files" in file:
+            carpeta_encontrada = buscarContenido(file["files"], ruta_carpeta)
+            if carpeta_encontrada is not None:
+                return carpeta_encontrada
+    return None
+
+def obtenerJson(userName):
+    # Cargar el JSON
+    nombreArchivo = userName + '.json'
+    with open(nombreArchivo) as json_file:
+        data = json.load(json_file)
+    return data
 
 def buscar_carpeta(json_data, nombre_carpeta):
     archivos_encontrados = []
