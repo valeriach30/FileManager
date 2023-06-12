@@ -151,7 +151,6 @@ def crearArchivo():
     
     if(len(rutas) != 1):
         # Agregar el archivo al json
-        #jsonD = json.loads(data)
         nuevoArchivo(nombreArchivo, contenido, extension, userName, carpeta[4:], data)
         archivos, folders = buscar_carpeta(data, carpeta[4:])
     else:
@@ -163,7 +162,25 @@ def crearArchivo():
 
 @app.route('/crearCarpeta')
 def crearCarpeta():
-    print("carpeta creada")
+    nombreCarpeta = request.args.get('nombre')
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    carpeta = request.args.get('ruta')    
+    data = obtenerJson(userName)
+
+    if(len(rutas) != 1):
+        # Agregar el archivo al json
+        nuevaCarpeta(nombreCarpeta, userName, carpeta[4:], data)
+        archivos, folders = buscar_carpeta(data, carpeta[4:])
+    else:
+        folders, archivos = obtenerFileSystem(data)
+    
+    return render_template('dashboard.html', email=email, name=userName, 
+                               folders=folders, archivos=archivos, rutas = rutas)
+    
 
 @app.route('/eliminarCarpeta')
 def eliminarCarpeta():
@@ -196,6 +213,31 @@ def nuevoArchivo(nombreArchivo, contenido, extension, usuario, rutaCarpeta, data
         with open(nombreArchivo, "w") as file:
             file.write(updated_json)
 
+def nuevaCarpeta(nombreCarpeta, usuario, rutaCarpeta, data):
+    carpeta = buscarContenido(data["files"], rutaCarpeta)
+    if carpeta is not None:
+        size = str(random.randint(1, 1000)) + ' KB'
+        fecha_actual = date.today()
+        fecha_actual = fecha_actual.strftime("%d/%m/%Y")
+        carpetaNueva = {
+            "name": nombreCarpeta,
+            "type": "folder",
+            "created_at": fecha_actual,
+            "updated": fecha_actual,
+            "user": "valeria",
+            "files": []
+        }
+        # Agrega el nuevo archivo a la carpeta encontrada
+        carpeta["files"].append(carpetaNueva)
+
+        # Convierte el objeto Python de vuelta a JSON
+        updated_json = json.dumps(data)
+
+        # Actualiza el archivo local con el nuevo JSON
+        nombreArchivo = usuario + '.json'
+        with open(nombreArchivo, "w") as file:
+            file.write(updated_json)
+    
 # Función recursiva para encontrar contenido de una carpeta
 def buscarContenido(files, ruta_carpeta):
     for file in files:
