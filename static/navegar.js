@@ -52,5 +52,11 @@ $(document).ready(function() {
         var url = '/subcarpeta?' + params.toString();
         window.location.href = url;
     });
+
+    // -------------------------------------- EVENT LISTENERS --------------------------------------
+    // Add event listener to the button
+    $("#addButton").click(function() {
+        $("#popup").modal();
+    });
 });
   
