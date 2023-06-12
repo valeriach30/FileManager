@@ -237,7 +237,28 @@
         window.location.href = url;
     }
     function enviarEliminar(){
-
+        // Obtener datos
+        var emailElement = document.getElementById("email");
+        var emailValue = emailElement.innerHTML;
+        var userElement = document.getElementById("name");
+        var userValue = userElement.getAttribute("data-value");
+        var rutasElement = document.getElementById("rutas");
+        
+        // Obtener la ruta actual
+        var rutasValue = rutasElement.getAttribute("data-value");
+        rutasValue = rutasValue.replace(/[\[\]']+/g, '');
+        var rutasArray = rutasValue.split(",");
+        var ultimaRuta = rutasArray[rutasArray.length - 1];
+        
+        // Construir los parámetros de consulta
+        var params = new URLSearchParams();
+        params.append('email', emailValue);
+        params.append('name', userValue);
+        params.append('rutas', rutasArray);
+        params.append('ruta', ultimaRuta);
+        
+        var url = '/eliminarCarpeta?' + params.toString();
+        window.location.href = url;
     }
 
     function closeForm() {

@@ -184,7 +184,26 @@ def crearCarpeta():
 
 @app.route('/eliminarCarpeta')
 def eliminarCarpeta():
-    print("carpeta eliminada")
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    carpeta = request.args.get('ruta') 
+    data = obtenerJson(userName)
+
+    if(len(rutas) != 1):
+        # Agregar el archivo al json
+        eliminar_carpeta(data, carpeta[4:], userName)
+        # Eliminar la ruta actual de la lista de rutas
+        rutas.pop()
+        carpeta = rutas[-1]
+        archivos, folders = buscar_carpeta(data, carpeta[3:])
+    else:
+        folders, archivos = obtenerFileSystem(data)
+    
+    return render_template('dashboard.html', email=email, name=userName, 
+                               folders=folders, archivos=archivos, rutas = rutas)
 
 # ---------------------- FUNCIONES COMPLEMENTARIAS ----------------------
 def nuevoArchivo(nombreArchivo, contenido, extension, usuario, rutaCarpeta, data):
@@ -237,7 +256,28 @@ def nuevaCarpeta(nombreCarpeta, usuario, rutaCarpeta, data):
         nombreArchivo = usuario + '.json'
         with open(nombreArchivo, "w") as file:
             file.write(updated_json)
+
+def eliminar_carpeta(data, ruta_directorio, usuario):
+    eliminar_directorio(data["files"], ruta_directorio)
+    # Convierte el objeto Python de vuelta a JSON
+    updated_json = json.dumps(data)
+
+    # Actualiza el archivo local con el nuevo JSON
+    nombreArchivo = usuario + '.json'
+    with open(nombreArchivo, "w") as file:
+        file.write(updated_json)
     
+# Función recursiva para eliminar un directorio y sus archivos/subdirectorios
+def eliminar_directorio(files, ruta_directorio):
+    for file in files:
+        if file["name"] == ruta_directorio and file["type"] == "folder":
+            files.remove(file)
+            return True
+        if file["type"] == "folder" and "files" in file:
+            if eliminar_directorio(file["files"], ruta_directorio):
+                return True
+    return False
+
 # Función recursiva para encontrar contenido de una carpeta
 def buscarContenido(files, ruta_carpeta):
     for file in files:
