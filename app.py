@@ -112,10 +112,16 @@ def rutaAnterior():
         
     # Obtener nombre de la carpeta actual
     carpeta = request.args.get('ruta')
+    print(carpeta)    
+    # Determinar el indice de la ruta seleccionada
+    indice = currentRoute.index(carpeta) 
     
+
     if(len(currentRoute) != 1):
         # Actualizar ruta
-        currentRoute.pop()
+        print(currentRoute)
+        currentRoute = currentRoute[:indice+1]
+        print(currentRoute)
         if(len(currentRoute) != 1):
             # Obtener archivos y subcarpetas
             archivos, folders = buscar_carpeta(data, carpeta[3:])
