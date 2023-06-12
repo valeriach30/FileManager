@@ -2,8 +2,10 @@ from flask import Flask, render_template, request, session, redirect
 from pymongo import MongoClient
 from flask_socketio import SocketIO, send
 from flask_session import Session
+from datetime import date
 import json
 import secrets
+import random
 
 
 client = MongoClient('mongodb+srv://Kdaniel06:Dani060401$@cluster0.t10iglg.mongodb.net/?retryWrites=true&w=majority')
@@ -171,12 +173,15 @@ def eliminarCarpeta():
 def nuevoArchivo(nombreArchivo, contenido, extension, usuario, rutaCarpeta, data):
     carpeta = buscarContenido(data["files"], rutaCarpeta)
     if carpeta is not None:
+        size = str(random.randint(1, 1000)) + ' KB'
+        fecha_actual = date.today()
+        fecha_actual = fecha_actual.strftime("%d/%m/%Y")
         nuevo_archivo = {
             "name": nombreArchivo,
             "type": "archivo",
-            "size": "0 KB",  
-            "created_at": "2023-06-20",
-            "updated": "2023-06-20",  
+            "size": size,  
+            "created_at": fecha_actual,
+            "updated": fecha_actual,  
             "user": usuario,
             "content": contenido
         }
