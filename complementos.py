@@ -5,15 +5,20 @@ from datetime import date
 # ---------------------- NUEVO ARCHIVO ----------------------
 
 def nuevoArchivo(nombreArchivo, contenido, extension, usuario, rutas, data):
+    nombreArchivo = nombreArchivo + '.txt'
     rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
     rutas.pop(0)
     carpeta = buscarContenido(data["files"], rutas)
-    if carpeta is not None:
+    
+    # Determinar si hay un archivo con el mismo nombre dentro de la carpeta
+    presente = archivoRepetido(carpeta, nombreArchivo)
+    
+    if carpeta is not None and not presente:
         size = str(random.randint(1, 500)) + ' KB'
         fecha_actual = date.today()
         fecha_actual = fecha_actual.strftime("%d/%m/%Y")
         nuevo_archivo = {
-            "name": nombreArchivo + '.txt',
+            "name": nombreArchivo,
             "type": "archivo",
             "size": size,  
             "created_at": fecha_actual,
@@ -31,6 +36,18 @@ def nuevoArchivo(nombreArchivo, contenido, extension, usuario, rutas, data):
         nombreArchivo = usuario + '.json'
         with open(nombreArchivo, "w") as file:
             file.write(updated_json)
+        return False
+    else:
+        return True
+
+# Funcion que determina si dentro de una carpeta ya esta un archivo
+def archivoRepetido(json_carpeta, nombre_archivo):
+    files = json_carpeta["files"]
+    print(files)
+    for archivo in files:
+        if archivo["name"] == nombre_archivo and archivo["type"] == "archivo":
+            return True
+    return False
 
 
 # ---------------------- EDITAR ARCHIVO ----------------------
@@ -78,6 +95,53 @@ def cambiarContenido(files, ruta_carpeta, nombreArchivo, nuevoContenido):
                 if carpeta_encontrada is not None:
                     return carpeta_encontrada
 
+    return None
+
+# ---------------------- ELIMINAR ARCHIVO ----------------------
+
+def eliminarArchivo(rutas, data, nombreArchivo, usuario):
+    
+    rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
+    rutas.pop(0)
+    
+    # Editar archivo
+    newFiles = eliminarContenido(data["files"], rutas, nombreArchivo)
+    
+    if(len(rutas) != 1):
+        for carpeta in data['files']:
+            if(carpeta['name'] == rutas[-2]):
+                carpeta['files'] = newFiles
+
+    # Convierte el objeto Python de vuelta a JSON
+    updated_json = json.dumps(data)
+
+    # Actualiza el archivo local con el nuevo JSON
+    nombreArchivo = usuario + '.json'
+    with open(nombreArchivo, "w") as file:
+        file.write(updated_json)
+
+def eliminarContenido(files, ruta_carpeta, nombreArchivo):
+    if len(ruta_carpeta) == 0:
+        return None
+
+    nombre_carpeta = ruta_carpeta[0]
+    print("nombre carpeta> " + str(nombre_carpeta))
+    for file in files:
+        print(" file name> " + str(file['name']))
+        if file["name"] == nombre_carpeta and file["type"] == "folder":
+            if len(ruta_carpeta) == 1:
+                # Se encontro la carpeta, ahora se buscara el archivo
+                for archivo in file['files']:
+                  print("archiov> " + str(archivo['name']))
+                  if archivo["name"] == nombreArchivo and archivo["type"] == "archivo":
+                      # Eliminar aca
+                      file['files'].remove(archivo)
+                      return files
+
+            if "files" in file:
+                carpeta_encontrada = eliminarContenido(file["files"], ruta_carpeta[1:], nombreArchivo)
+                if carpeta_encontrada is not None:
+                    return carpeta_encontrada
     return None
 
 # ---------------------- NUEVA CARPETA ----------------------

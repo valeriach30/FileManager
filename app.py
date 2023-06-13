@@ -70,8 +70,8 @@ def dashboard():
         folders, archivos = complementos.obtenerFileSystem(data)
         
         # Usuario autenticado, mostrar dashboard
-        return render_template('dashboard.html', email=email, name=userName, 
-                               folders=folders, archivos=archivos, rutas = currentRoute)
+        return render_template('dashboard.html', email=email, name=userName, folders=folders, 
+                               archivos=archivos, rutas = currentRoute, error=False)
     else:
         # Usuario no autenticado, redirigir al inicio de sesión
         return redirect('/login',  error='')
@@ -98,8 +98,8 @@ def subcarpeta():
     archivos, folders = complementos.buscar_carpeta(data, currentRoute)
     
     # Redirigir
-    return render_template('dashboard.html', email=email, name=userName, 
-                               folders=folders, archivos=archivos, rutas = currentRoute)
+    return render_template('dashboard.html', email=email, name=userName, folders=folders, 
+                           archivos=archivos, rutas = currentRoute, error=False)
 
 
 @app.route('/rutaAnterior')
@@ -129,8 +129,8 @@ def rutaAnterior():
         folders, archivos = complementos.obtenerFileSystem(data)
 
     # Redirigir
-    return render_template('dashboard.html', email=email, name=userName, 
-                               folders=folders, archivos=archivos, rutas = currentRoute)
+    return render_template('dashboard.html', email=email, name=userName, folders=folders, 
+                           archivos=archivos, rutas = currentRoute, error=False)
 
 
 # ---------------------- CREAR ARCHIVO ----------------------
@@ -150,13 +150,13 @@ def crearArchivo():
     
     if(len(rutas) != 1):
         # Agregar el archivo al json
-        complementos.nuevoArchivo(nombreArchivo, contenido, extension, userName, rutas, data)
+        error = complementos.nuevoArchivo(nombreArchivo, contenido, extension, userName, rutas, data)
         archivos, folders = complementos.buscar_carpeta(data, rutas)
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
-    return render_template('dashboard.html', email=email, name=userName, 
-                               folders=folders, archivos=archivos, rutas = rutas)
+    return render_template('dashboard.html', email=email, name=userName, folders=folders,
+                            archivos=archivos, rutas = rutas, error=error)
     
 
 
@@ -182,8 +182,31 @@ def editarArchivo():
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
-    return render_template('dashboard.html', email=email, name=userName, 
-                               folders=folders, archivos=archivos, rutas = rutas)
+    return render_template('dashboard.html', email=email, name=userName, folders=folders, 
+                           archivos=archivos, rutas = rutas, error=False)
+
+# ---------------------- ELIMINAR ARCHIVO ----------------------
+
+@app.route('/eliminarArchivo')
+def eliminarArchivo():
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    nombreArchivo = request.args.get('nombreAr')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+
+    data = complementos.obtenerJson(userName)
+
+    if(len(rutas) != 1):
+        # Agregar el archivo al json
+        complementos.eliminarArchivo(rutas, data, nombreArchivo, userName)
+        archivos, folders = complementos.buscar_carpeta(data, rutas)
+    else:
+        folders, archivos = complementos.obtenerFileSystem(data)
+    
+    return render_template('dashboard.html', email=email, name=userName, folders=folders, 
+                           archivos=archivos, rutas = rutas, error=False)
 
 # ---------------------- CREAR CARPETA ----------------------
 
@@ -205,8 +228,8 @@ def crearCarpeta():
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
-    return render_template('dashboard.html', email=email, name=userName, 
-                               folders=folders, archivos=archivos, rutas = rutas)
+    return render_template('dashboard.html', email=email, name=userName, folders=folders, 
+                           archivos=archivos, rutas = rutas, error=False)
     
 
 # ---------------------- ELIMINAR CARPETA ----------------------
@@ -231,8 +254,8 @@ def eliminarCarpeta():
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
-    return render_template('dashboard.html', email=email, name=userName, 
-                               folders=folders, archivos=archivos, rutas = rutas)
+    return render_template('dashboard.html', email=email, name=userName, folders=folders, 
+                           archivos=archivos, rutas = rutas, error=False)
 
 
 

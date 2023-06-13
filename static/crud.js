@@ -128,3 +128,48 @@ function obtenerRutas(){
     var rutasArray = rutasValue.split(",");
     return rutasArray
 }
+
+// --------------------------- ELIMINAR ARCHIVO ---------------------------
+
+function eliminarArchivo(){
+    // Obtener datos
+    var emailElement = document.getElementById("email");
+    var emailValue = emailElement.innerHTML;
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");    
+    var rutasArray = obtenerRutas();
+    var nombre = document.getElementById("nombre");
+    nombre = nombre.innerText;
+
+    // Construir los parámetros de consulta
+    var params = new URLSearchParams();
+    params.append('email', emailValue);
+    params.append('name', userValue);
+    params.append('rutas', rutasArray);
+    params.append('nombreAr', nombre);
+    
+    var url = '/eliminarArchivo?' + params.toString();
+    window.location.href = url;
+}
+
+// --------------------------- ARCHIVO REPETIDO ---------------------------
+
+function sustituirArchivo(element){
+    quitarPopUp(element);
+    
+    // Eliminar el archivo
+
+
+    // Crear el archivo
+};
+
+function cancelarArchivo(element){
+    quitarPopUp(element);
+};
+
+function quitarPopUp(element){
+    $(element).parents('.dialog-ovelay').find('.dialog').removeClass('zoomIn').addClass('zoomOut');
+    $(element).parents('.dialog-ovelay').fadeOut(function () {
+        $(element).remove();
+    });
+}
