@@ -1,0 +1,178 @@
+import random
+import json
+from datetime import date
+
+# ---------------------- NUEVO ARCHIVO ----------------------
+
+def nuevoArchivo(nombreArchivo, contenido, extension, usuario, rutas, data):
+    rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
+    rutas.pop(0)
+    carpeta = buscarContenido(data["files"], rutas)
+    if carpeta is not None:
+        size = str(random.randint(1, 1000)) + ' KB'
+        fecha_actual = date.today()
+        fecha_actual = fecha_actual.strftime("%d/%m/%Y")
+        nuevo_archivo = {
+            "name": nombreArchivo,
+            "type": "archivo",
+            "size": size,  
+            "created_at": fecha_actual,
+            "updated": fecha_actual,  
+            "user": usuario,
+            "content": contenido
+        }
+        # Agrega el nuevo archivo a la carpeta encontrada
+        carpeta["files"].append(nuevo_archivo)
+
+        # Convierte el objeto Python de vuelta a JSON
+        updated_json = json.dumps(data)
+
+        # Actualiza el archivo local con el nuevo JSON
+        nombreArchivo = usuario + '.json'
+        with open(nombreArchivo, "w") as file:
+            file.write(updated_json)
+
+
+# ---------------------- NUEVA CARPETA ----------------------
+
+def nuevaCarpeta(nombreCarpeta, usuario, rutas, data):
+    rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
+    rutas.pop(0)
+    carpeta = buscarContenido(data["files"], rutas)
+    if carpeta is not None:
+        size = str(random.randint(1, 1000)) + ' KB'
+        fecha_actual = date.today()
+        fecha_actual = fecha_actual.strftime("%d/%m/%Y")
+        carpetaNueva = {
+            "name": nombreCarpeta,
+            "type": "folder",
+            "created_at": fecha_actual,
+            "updated": fecha_actual,
+            "user": "valeria",
+            "files": []
+        }
+        # Agrega el nuevo archivo a la carpeta encontrada
+        carpeta["files"].append(carpetaNueva)
+
+        # Convierte el objeto Python de vuelta a JSON
+        updated_json = json.dumps(data)
+
+        # Actualiza el archivo local con el nuevo JSON
+        nombreArchivo = usuario + '.json'
+        with open(nombreArchivo, "w") as file:
+            file.write(updated_json)
+
+
+# ---------------------- ELIMINAR CARPETA ----------------------
+
+def eliminar_carpeta(data, rutas, usuario):
+    rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
+    rutas.pop(0)
+    eliminar_directorio(data["files"], rutas)
+    # Convierte el objeto Python de vuelta a JSON
+    updated_json = json.dumps(data)
+
+    # Actualiza el archivo local con el nuevo JSON
+    nombreArchivo = usuario + '.json'
+    with open(nombreArchivo, "w") as file:
+        file.write(updated_json)
+
+# Función recursiva para eliminar un directorio y sus archivos/subdirectorios
+def eliminar_directorio(files, rutas_directorio):
+    if len(rutas_directorio) == 0:
+        return False
+
+    ruta_directorio = rutas_directorio[0]
+
+    for file in files:
+        if file["name"] == ruta_directorio and file["type"] == "folder":
+            if len(rutas_directorio) == 1:
+                files.remove(file)
+                return True
+            else:
+                return eliminar_directorio(file["files"], rutas_directorio[1:])
+        elif file["type"] == "folder" and "files" in file:
+            if eliminar_directorio(file["files"], rutas_directorio):
+                return True
+    return False
+
+
+# ---------------------- BUSCAR CONTENIDO ----------------------
+
+# Función recursiva para encontrar contenido de una carpeta
+def buscarContenido(files, ruta_carpeta):
+    if len(ruta_carpeta) == 0:
+        return None
+
+    nombre_carpeta = ruta_carpeta[0]
+
+    for file in files:
+        if file["name"] == nombre_carpeta and file["type"] == "folder":
+            if len(ruta_carpeta) == 1:
+                return file
+            if "files" in file:
+                carpeta_encontrada = buscarContenido(file["files"], ruta_carpeta[1:])
+                if carpeta_encontrada is not None:
+                    return carpeta_encontrada
+
+    return None
+
+# ---------------------- OBTENER JSON ----------------------
+def obtenerJson(userName):
+    # Cargar el JSON
+    nombreArchivo = userName + '.json'
+    with open(nombreArchivo) as json_file:
+        data = json.load(json_file)
+    return data
+
+# ---------------------- BUSCAR CARPETA ----------------------
+def buscar_carpeta(json_data, ruta_carpeta):
+    
+    ruta_carpeta = [ruta.strip().lstrip('/').strip() for ruta in ruta_carpeta if ruta.strip()]
+    ruta_carpeta.pop(0)
+    
+    archivos_encontrados = []
+    carpetas_encontradas = []
+
+    def buscar_recursivo(data, ruta_actual):
+        if len(ruta_actual) == 0:
+            for item in data['files']:
+                if item['type'] == 'archivo':
+                    archivos_encontrados.append(item)
+                elif item['type'] == 'folder':
+                    carpetas_encontradas.append(item)
+        else:
+            nombre_carpeta = ruta_actual[0]
+            for item in data['files']:
+                if item['type'] == 'folder' and item['name'] == nombre_carpeta:
+                    if len(ruta_actual) == 1:
+                        for archivo in item['files']:
+                            if archivo['type'] == 'archivo':
+                                archivos_encontrados.append(archivo)
+                        for carpeta in item['files']:
+                            if carpeta['type'] == 'folder':
+                                carpetas_encontradas.append(carpeta)
+                    else:
+                        buscar_recursivo(item, ruta_actual[1:])
+                
+    buscar_recursivo(json_data, ruta_carpeta)
+    return archivos_encontrados, carpetas_encontradas
+
+
+# ---------------------- OBTENER FILE SYSTEM ----------------------
+
+# Obtener la estructura del usuario
+def obtenerFileSystem(data):
+    folders = []
+    archivos = []
+
+    # Obtener carpetas y archivos
+    for item in data['files']:
+        if item['type'] == 'folder':
+            if(item not in folders):
+                folders.append(item)
+        elif item['type'] == 'archivo':
+            if(item not in archivos):
+                archivos.append(item)
+
+    return folders, archivos
