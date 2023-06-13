@@ -157,10 +157,34 @@ function eliminarArchivo(){
 function sustituirArchivo(element){
     quitarPopUp(element);
     
-    // Eliminar el archivo
+    // Obtener datos
+    var emailElement = document.getElementById("email");
+    var emailValue = emailElement.innerHTML;
 
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");
 
-    // Crear el archivo
+    var contenido = document.getElementById("contenido2");
+    contenido = contenido.getAttribute("data-value");
+    var nombre = document.getElementById("nombreArchivo");
+    nombre = nombre.getAttribute("data-value");
+    var extension = document.getElementById("extension").value;
+    
+    var rutasArray = obtenerRutas();
+    var ultimaRuta = rutasArray[rutasArray.length - 1];
+
+    // Construir los parámetros de consulta
+    var params = new URLSearchParams();
+    params.append('email', emailValue);
+    params.append('name', userValue);
+    params.append('rutas', rutasArray);
+    params.append('ruta', ultimaRuta);
+    params.append('nombre', nombre);
+    params.append('contenido', contenido);
+    params.append('extension', extension);
+    
+    var url = '/sustituirArchivo?' + params.toString();
+    window.location.href = url;
 };
 
 function cancelarArchivo(element){

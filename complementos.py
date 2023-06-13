@@ -43,7 +43,6 @@ def nuevoArchivo(nombreArchivo, contenido, extension, usuario, rutas, data):
 # Funcion que determina si dentro de una carpeta ya esta un archivo
 def archivoRepetido(json_carpeta, nombre_archivo):
     files = json_carpeta["files"]
-    print(files)
     for archivo in files:
         if archivo["name"] == nombre_archivo and archivo["type"] == "archivo":
             return True
@@ -125,14 +124,11 @@ def eliminarContenido(files, ruta_carpeta, nombreArchivo):
         return None
 
     nombre_carpeta = ruta_carpeta[0]
-    print("nombre carpeta> " + str(nombre_carpeta))
     for file in files:
-        print(" file name> " + str(file['name']))
         if file["name"] == nombre_carpeta and file["type"] == "folder":
             if len(ruta_carpeta) == 1:
                 # Se encontro la carpeta, ahora se buscara el archivo
                 for archivo in file['files']:
-                  print("archiov> " + str(archivo['name']))
                   if archivo["name"] == nombreArchivo and archivo["type"] == "archivo":
                       # Eliminar aca
                       file['files'].remove(archivo)

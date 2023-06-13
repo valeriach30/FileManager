@@ -156,7 +156,8 @@ def crearArchivo():
         folders, archivos = complementos.obtenerFileSystem(data)
     
     return render_template('dashboard.html', email=email, name=userName, folders=folders,
-                            archivos=archivos, rutas = rutas, error=error)
+                            archivos=archivos, rutas = rutas, error=error,
+                            nombreArchivo=nombreArchivo, contenido = contenido)
     
 
 
@@ -207,6 +208,36 @@ def eliminarArchivo():
     
     return render_template('dashboard.html', email=email, name=userName, folders=folders, 
                            archivos=archivos, rutas = rutas, error=False)
+
+
+# ---------------------- SUSTITUIR ARCHIVO ----------------------
+@app.route('/sustituirArchivo')
+def sustituirArchivo():
+    nombreArchivo = request.args.get('nombre')
+    contenido = request.args.get('contenido')
+    extension = request.args.get('extension')
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    carpeta = request.args.get('ruta')    
+    data = complementos.obtenerJson(userName)
+    
+    if(len(rutas) != 1):
+        # Eliminar el archivo del json
+        complementos.eliminarArchivo(rutas, data, nombreArchivo + '.txt', userName)
+        # Agregar el archivo al json
+        data = complementos.obtenerJson(userName)
+        complementos.nuevoArchivo(nombreArchivo, contenido, extension, userName, rutas, data)
+
+        archivos, folders = complementos.buscar_carpeta(data, rutas)
+    else:
+        folders, archivos = complementos.obtenerFileSystem(data)
+    
+    return render_template('dashboard.html', email=email, name=userName, folders=folders,
+                            archivos=archivos, rutas = rutas, error=False)
+
 
 # ---------------------- CREAR CARPETA ----------------------
 
