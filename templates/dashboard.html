@@ -107,7 +107,7 @@
                                         <p id="fechaMP" style="color: rgb(180, 172, 172);"></p>
                                         <p>Usuario: </p>
                                         <p id="usuarioP" style="color: rgb(180, 172, 172);"></p>
-                                        <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Edit"><i class="fa fa-pencil-square"></i></button>
+                                        <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Edit" onclick="editarArchivo()"><i class="fa fa-pencil-square"></i></button>
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Copy1"><i class="fa fa-desktop"></i></button>
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Copy2"><i class="fa fa-cloud-download"></i></button>
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Copy3"><i class="fa fa-files-o"></i></button> 
@@ -157,6 +157,18 @@
                                   <label for="nombre"><b>Seguro que desea eliminar esta carpeta? Todo el contenido dentro de ella se borrara tambien</b></label>
                                   
                                   <button type="submit" class="btn" onclick="enviarEliminar()">Eliminar</button>
+                                  <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
+                                </div>
+                            </div>
+                            <!--POP UP 5 EDITAR ARCHIVO-->
+                            <div class="form-popup" id="formEditarArchivo">
+                                <div class="form-container">
+                                  <h2>Editar Archivo</h2>
+                              
+                                  <label for="nombre"><b>Contenido</b></label>
+                                  <input type="text" placeholder="Ingrese el nuevo contenido" id="nuevoContenido" required>
+                              
+                                  <button type="submit" class="btn" onclick="updateArchivo()">Editar</button>
                                   <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
                                 </div>
                             </div>

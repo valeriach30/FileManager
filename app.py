@@ -159,6 +159,32 @@ def crearArchivo():
                                folders=folders, archivos=archivos, rutas = rutas)
     
 
+
+# ---------------------- EDITAR ARCHIVO ----------------------
+
+@app.route('/editarArchivo')
+def editarArchivo():
+
+    # Obtener la info
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    nombreArchivo = request.args.get('nombreArch')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    nuevoContenido = request.args.get('nuevoContenido')
+    data = complementos.obtenerJson(userName)
+
+    if(len(rutas) != 1):
+        # Editar el archivo
+        complementos.editarArchivo(rutas, data, nombreArchivo, nuevoContenido, userName)    
+        archivos, folders = complementos.buscar_carpeta(data, rutas)
+    else:
+        folders, archivos = complementos.obtenerFileSystem(data)
+    
+    return render_template('dashboard.html', email=email, name=userName, 
+                               folders=folders, archivos=archivos, rutas = rutas)
+
 # ---------------------- CREAR CARPETA ----------------------
 
 @app.route('/crearCarpeta')

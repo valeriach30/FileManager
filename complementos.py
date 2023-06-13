@@ -33,6 +33,53 @@ def nuevoArchivo(nombreArchivo, contenido, extension, usuario, rutas, data):
             file.write(updated_json)
 
 
+# ---------------------- EDITAR ARCHIVO ----------------------
+
+def editarArchivo(rutas, data, nombreArchivo, nuevoContenido, usuario):
+    rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
+    rutas.pop(0)
+    
+    # Editar archivo
+    newFiles = cambiarContenido(data["files"], rutas, nombreArchivo, nuevoContenido)
+
+    if(len(rutas) != 1):
+        for carpeta in data['files']:
+            if(carpeta['name'] == rutas[-2]):
+                carpeta['files'] = newFiles
+
+    # Convierte el objeto Python de vuelta a JSON
+    updated_json = json.dumps(data)
+
+    # Actualiza el archivo local con el nuevo JSON
+    nombreArchivo = usuario + '.json'
+    with open(nombreArchivo, "w") as file:
+        file.write(updated_json)
+
+def cambiarContenido(files, ruta_carpeta, nombreArchivo, nuevoContenido):
+    if len(ruta_carpeta) == 0:
+        return None
+
+    nombre_carpeta = ruta_carpeta[0]
+
+    for file in files:
+        if file["name"] == nombre_carpeta and file["type"] == "folder":
+            if len(ruta_carpeta) == 1:
+                # Se encontro la carpeta, ahora se buscara el archivo
+                for archivo in file['files']:
+                  if archivo["name"] == nombreArchivo and archivo["type"] == "archivo":
+                      archivo["content"] = nuevoContenido
+                      fecha_actual = date.today()
+                      fecha_actual = fecha_actual.strftime("%d/%m/%Y")
+                      archivo["updated"] = fecha_actual
+                      return files
+
+            if "files" in file:
+                carpeta_encontrada = cambiarContenido(file["files"], ruta_carpeta[1:], nombreArchivo, nuevoContenido)
+                if carpeta_encontrada is not None:
+                    return carpeta_encontrada
+
+    return None
+
 # ---------------------- NUEVA CARPETA ----------------------
 
 def nuevaCarpeta(nombreCarpeta, usuario, rutas, data):

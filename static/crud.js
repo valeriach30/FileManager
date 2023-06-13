@@ -1,3 +1,4 @@
+// --------------------------- ABRIR POP UPS ---------------------------
 function agregarArchivo() {
     document.getElementById("myForm").style.display = "block";
 }
@@ -7,6 +8,11 @@ function agregarCarpeta() {
 function eliminarCarpeta() {
     document.getElementById("formElimCarpeta").style.display = "block";
 }
+function editarArchivo() {
+    document.getElementById("formEditarArchivo").style.display = "block";
+}
+
+// --------------------------- CREAR ARCHIVO ---------------------------
 function enviarForm(){
     
     // Obtener datos
@@ -19,13 +25,10 @@ function enviarForm(){
     var contenido = document.getElementById("contenido").value;
     var nombre = document.getElementById("nombre1").value;
     var extension = document.getElementById("extension").value;
-    var rutasElement = document.getElementById("rutas");
     
-    // Obtener la ruta actual
-    var rutasValue = rutasElement.getAttribute("data-value");
-    rutasValue = rutasValue.replace(/[\[\]']+/g, '');
-    var rutasArray = rutasValue.split(",");
+    var rutasArray = obtenerRutas();
     var ultimaRuta = rutasArray[rutasArray.length - 1];
+
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
     params.append('email', emailValue);
@@ -40,19 +43,41 @@ function enviarForm(){
     window.location.href = url;
 }
 
+// --------------------------- UPDATE ARCHIVO ---------------------------
+function updateArchivo(){
+    var emailElement = document.getElementById("email");
+    var emailValue = emailElement.innerHTML;
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");
+    var nuevoContenido = document.getElementById("nuevoContenido").value;
+    var rutasArray = obtenerRutas();
+    var ultimaRuta = rutasArray[rutasArray.length - 1];
+    var nombre = document.getElementById("nombre");
+    nombre = nombre.innerText;
+
+    // Construir los parámetros de consulta
+    var params = new URLSearchParams();
+    params.append('email', emailValue);
+    params.append('name', userValue);
+    params.append('rutas', rutasArray);
+    params.append('ruta', ultimaRuta);
+    params.append('nuevoContenido', nuevoContenido);
+    params.append('nombreArch', nombre);
+
+    var url = '/editarArchivo?' + params.toString();
+    window.location.href = url;
+}
+
+// --------------------------- AGREGAR CARPETA ---------------------------
 function enviarCarpeta(){
     // Obtener datos
     var emailElement = document.getElementById("email");
     var emailValue = emailElement.innerHTML;
     var userElement = document.getElementById("name");
     var userValue = userElement.getAttribute("data-value");
-    var rutasElement = document.getElementById("rutas");
     var nombre = document.getElementById("nombre2").value;
     
-    // Obtener la ruta actual
-    var rutasValue = rutasElement.getAttribute("data-value");
-    rutasValue = rutasValue.replace(/[\[\]']+/g, '');
-    var rutasArray = rutasValue.split(",");
+    var rutasArray = obtenerRutas();
     var ultimaRuta = rutasArray[rutasArray.length - 1];
     
     // Construir los parámetros de consulta
@@ -66,18 +91,16 @@ function enviarCarpeta(){
     var url = '/crearCarpeta?' + params.toString();
     window.location.href = url;
 }
+
+// --------------------------- ELIMINAR CARPETA ---------------------------
 function enviarEliminar(){
     // Obtener datos
     var emailElement = document.getElementById("email");
     var emailValue = emailElement.innerHTML;
     var userElement = document.getElementById("name");
     var userValue = userElement.getAttribute("data-value");
-    var rutasElement = document.getElementById("rutas");
     
-    // Obtener la ruta actual
-    var rutasValue = rutasElement.getAttribute("data-value");
-    rutasValue = rutasValue.replace(/[\[\]']+/g, '');
-    var rutasArray = rutasValue.split(",");
+    var rutasArray = obtenerRutas();
     var ultimaRuta = rutasArray[rutasArray.length - 1];
     
     // Construir los parámetros de consulta
@@ -91,8 +114,17 @@ function enviarEliminar(){
     window.location.href = url;
 }
 
+// --------------------------- CLOSE FORM ---------------------------
 function closeForm() {
     document.getElementById("myForm").style.display = "none";
     document.getElementById("formCarpeta").style.display = "none";
     document.getElementById("formElimCarpeta").style.display = "none";
+}
+
+function obtenerRutas(){
+    var rutasElement = document.getElementById("rutas");
+    var rutasValue = rutasElement.getAttribute("data-value");
+    rutasValue = rutasValue.replace(/[\[\]']+/g, '');
+    var rutasArray = rutasValue.split(",");
+    return rutasArray
 }
