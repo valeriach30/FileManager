@@ -9,11 +9,11 @@ def nuevoArchivo(nombreArchivo, contenido, extension, usuario, rutas, data):
     rutas.pop(0)
     carpeta = buscarContenido(data["files"], rutas)
     if carpeta is not None:
-        size = str(random.randint(1, 1000)) + ' KB'
+        size = str(random.randint(1, 500)) + ' KB'
         fecha_actual = date.today()
         fecha_actual = fecha_actual.strftime("%d/%m/%Y")
         nuevo_archivo = {
-            "name": nombreArchivo,
+            "name": nombreArchivo + '.txt',
             "type": "archivo",
             "size": size,  
             "created_at": fecha_actual,
@@ -87,7 +87,6 @@ def nuevaCarpeta(nombreCarpeta, usuario, rutas, data):
     rutas.pop(0)
     carpeta = buscarContenido(data["files"], rutas)
     if carpeta is not None:
-        size = str(random.randint(1, 1000)) + ' KB'
         fecha_actual = date.today()
         fecha_actual = fecha_actual.strftime("%d/%m/%Y")
         carpetaNueva = {
