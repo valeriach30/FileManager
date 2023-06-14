@@ -1,6 +1,13 @@
 import random
 import json
 from datetime import date
+from pymongo import MongoClient
+from flask import flash
+
+# Conexion con la bd
+client = MongoClient('mongodb+srv://Kdaniel06:Dani060401$@cluster0.t10iglg.mongodb.net/?retryWrites=true&w=majority')
+db = client['Users']
+collection = db['User']
 
 # ---------------------- NUEVO ARCHIVO ----------------------
 
@@ -10,35 +17,44 @@ def nuevoArchivo(nombreArchivo, contenido, extension, usuario, rutas, data):
     rutas.pop(0)
     carpeta = buscarContenido(data["files"], rutas)
     
+    # Determinar tamaño
+    bytes_texto = contenido.encode('utf-8')
+    sizeContenido = len(bytes_texto)
+    
     # Determinar si hay un archivo con el mismo nombre dentro de la carpeta
     presente = archivoRepetido(carpeta, nombreArchivo)
     
-    if carpeta is not None and not presente:
-        size = str(random.randint(1, 500)) + ' KB'
-        fecha_actual = date.today()
-        fecha_actual = fecha_actual.strftime("%d/%m/%Y")
-        nuevo_archivo = {
-            "name": nombreArchivo,
-            "type": "archivo",
-            "size": size,  
-            "created_at": fecha_actual,
-            "updated": fecha_actual,  
-            "user": usuario,
-            "content": contenido
-        }
-        # Agrega el nuevo archivo a la carpeta encontrada
-        carpeta["files"].append(nuevo_archivo)
+    # Determinar si hay espacio para el archivo
+    actualizado = actualizarEspacio(usuario, sizeContenido)
+    if(actualizado):
+        if carpeta is not None and not presente:
+            size = str(sizeContenido) + ' KB'
+            fecha_actual = date.today()
+            fecha_actual = fecha_actual.strftime("%d/%m/%Y")
+            nuevo_archivo = {
+                "name": nombreArchivo,
+                "type": "archivo",
+                "size": size,  
+                "created_at": fecha_actual,
+                "updated": fecha_actual,  
+                "user": usuario,
+                "content": contenido
+            }
+            # Agrega el nuevo archivo a la carpeta encontrada
+            carpeta["files"].append(nuevo_archivo)
 
-        # Convierte el objeto Python de vuelta a JSON
-        updated_json = json.dumps(data)
+            # Convierte el objeto Python de vuelta a JSON
+            updated_json = json.dumps(data)
 
-        # Actualiza el archivo local con el nuevo JSON
-        nombreArchivo = usuario + '.json'
-        with open(nombreArchivo, "w") as file:
-            file.write(updated_json)
-        return False
+            # Actualiza el archivo local con el nuevo JSON
+            nombreArchivo = usuario + '.json'
+            with open(nombreArchivo, "w") as file:
+                file.write(updated_json)
+            return False
+        else:
+            return True
     else:
-        return True
+        return None
 
 # Funcion que determina si dentro de una carpeta ya esta un archivo
 def archivoRepetido(json_carpeta, nombre_archivo):
@@ -55,23 +71,32 @@ def editarArchivo(rutas, data, nombreArchivo, nuevoContenido, usuario):
     rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
     rutas.pop(0)
     
+    bytes_texto = nuevoContenido.encode('utf-8')
+    sizeContenido = len(bytes_texto)
+    
+
     # Editar archivo
-    newFiles = cambiarContenido(data["files"], rutas, nombreArchivo, nuevoContenido)
+    newFiles = cambiarContenido(data["files"], rutas, nombreArchivo, nuevoContenido, usuario)
 
-    if(len(rutas) != 1):
-        for carpeta in data['files']:
-            if(carpeta['name'] == rutas[-2]):
-                carpeta['files'] = newFiles
+    if(cambiarContenido != False):
+        if(len(rutas) != 1):
+            for carpeta in data['files']:
+                if(carpeta['name'] == rutas[-2]):
+                    carpeta['files'] = newFiles
 
-    # Convierte el objeto Python de vuelta a JSON
-    updated_json = json.dumps(data)
+        # Convierte el objeto Python de vuelta a JSON
+        updated_json = json.dumps(data)
 
-    # Actualiza el archivo local con el nuevo JSON
-    nombreArchivo = usuario + '.json'
-    with open(nombreArchivo, "w") as file:
-        file.write(updated_json)
+        # Actualiza el archivo local con el nuevo JSON
+        nombreArchivo = usuario + '.json'
+        with open(nombreArchivo, "w") as file:
+            file.write(updated_json)
 
-def cambiarContenido(files, ruta_carpeta, nombreArchivo, nuevoContenido):
+        return True
+    else:
+        return False
+
+def cambiarContenido(files, ruta_carpeta, nombreArchivo, nuevoContenido, usuario):
     if len(ruta_carpeta) == 0:
         return None
 
@@ -83,14 +108,33 @@ def cambiarContenido(files, ruta_carpeta, nombreArchivo, nuevoContenido):
                 # Se encontro la carpeta, ahora se buscara el archivo
                 for archivo in file['files']:
                   if archivo["name"] == nombreArchivo and archivo["type"] == "archivo":
-                      archivo["content"] = nuevoContenido
-                      fecha_actual = date.today()
-                      fecha_actual = fecha_actual.strftime("%d/%m/%Y")
-                      archivo["updated"] = fecha_actual
-                      return files
+                    
+                    bytes_texto = nuevoContenido.encode('utf-8')
+                    sizeContenido = len(bytes_texto)
+
+                    # Restaurar espacio anterior
+                    restaurarEspacio(usuario, int(archivo["size"][:-3]))
+
+                    # Agregar espacio nuevo
+                    actualizado = actualizarEspacio(usuario, sizeContenido)
+
+                    if(actualizado):
+                        size = str(sizeContenido) + ' KB'
+                        
+                        # Actualizar
+                        archivo["content"] = nuevoContenido
+                        archivo["size"] = size
+                        fecha_actual = date.today()
+                        fecha_actual = fecha_actual.strftime("%d/%m/%Y")
+                        archivo["updated"] = fecha_actual
+
+                        # Retornar archivos
+                        return files
+                    else:
+                        return False
 
             if "files" in file:
-                carpeta_encontrada = cambiarContenido(file["files"], ruta_carpeta[1:], nombreArchivo, nuevoContenido)
+                carpeta_encontrada = cambiarContenido(file["files"], ruta_carpeta[1:], nombreArchivo, nuevoContenido, usuario)
                 if carpeta_encontrada is not None:
                     return carpeta_encontrada
 
@@ -104,7 +148,7 @@ def eliminarArchivo(rutas, data, nombreArchivo, usuario):
     rutas.pop(0)
     
     # Editar archivo
-    newFiles = eliminarContenido(data["files"], rutas, nombreArchivo)
+    newFiles = eliminarContenido(data["files"], rutas, nombreArchivo, usuario)
     
     if(len(rutas) != 1):
         for carpeta in data['files']:
@@ -119,7 +163,7 @@ def eliminarArchivo(rutas, data, nombreArchivo, usuario):
     with open(nombreArchivo, "w") as file:
         file.write(updated_json)
 
-def eliminarContenido(files, ruta_carpeta, nombreArchivo):
+def eliminarContenido(files, ruta_carpeta, nombreArchivo, usuario):
     if len(ruta_carpeta) == 0:
         return None
 
@@ -130,12 +174,14 @@ def eliminarContenido(files, ruta_carpeta, nombreArchivo):
                 # Se encontro la carpeta, ahora se buscara el archivo
                 for archivo in file['files']:
                   if archivo["name"] == nombreArchivo and archivo["type"] == "archivo":
+                      # Restaurar el espacio
+                      restaurarEspacio(usuario, int(archivo["size"][:-3]))
                       # Eliminar aca
                       file['files'].remove(archivo)
                       return files
 
             if "files" in file:
-                carpeta_encontrada = eliminarContenido(file["files"], ruta_carpeta[1:], nombreArchivo)
+                carpeta_encontrada = eliminarContenido(file["files"], ruta_carpeta[1:], nombreArchivo, usuario)
                 if carpeta_encontrada is not None:
                     return carpeta_encontrada
     return None
@@ -298,3 +344,52 @@ def obtenerFileSystem(data):
                 archivos.append(item)
 
     return folders, archivos
+
+
+# ---------------------- OBTENER CARPETAS ----------------------
+def obtenerCarpetas(data, ruta_actual="", rutas_carpetas=[]):
+    if "files" in data:
+        for item in data["files"]:
+            if item["type"] == "folder":
+                nombre_carpeta = item["name"]
+                nueva_ruta = f"{ruta_actual}/{nombre_carpeta}" if ruta_actual else nombre_carpeta
+                rutas_carpetas.append(nueva_ruta)
+                obtenerCarpetas(item, nueva_ruta, rutas_carpetas)
+    
+    return rutas_carpetas
+
+
+# ---------------------- FUNCIONES STORAGE ----------------------
+
+def determinarEspacio(usuario):
+    user = collection.find_one({"name": usuario})
+    storage = user.get("storage", 0)
+    return storage
+
+def actualizarEspacio(usuario, sizeArchivo):
+    # Determinar el espacio disponible del usuario
+    espacio = determinarEspacio(usuario)
+    
+    # Ya no queda espacio
+    if(sizeArchivo > espacio):
+        return False
+    else:
+        espacio -= sizeArchivo
+        user = collection.find_one({"name": usuario})
+        user['storage'] = espacio
+        # Actualiza el documento en la colección
+        collection.update_one({"name": usuario}, {"$set": {"storage": espacio}})
+        return True
+
+def restaurarEspacio(usuario, sizeArchivo):
+    # Determinar el espacio disponible del usuario
+    espacio = determinarEspacio(usuario)
+    
+    # Restaurar espacio
+    espacio += sizeArchivo
+    
+    # Actualizar en la bd
+    user = collection.find_one({"name": usuario})
+    user['storage'] = espacio
+    collection.update_one({"name": usuario}, {"$set": {"storage": espacio}})
+    
