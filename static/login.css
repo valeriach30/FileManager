@@ -128,6 +128,24 @@ input {
   box-shadow:0px 3px 0px #c1524e;
 }
 
+.btnC {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  width: 100%; /* Ajusta el ancho según tus necesidades */
+  padding: 20px;
+  border-radius: 6px;
+  border: 0;
+  background: #32c5df;
+  font-size: 1.2em;
+  color: #fff;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 3px 0px #4e90c7;
+}
+
+
+
 .btn:active {
   top:3px;
   box-shadow:none;

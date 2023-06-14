@@ -4,7 +4,7 @@
 {% if error == 'error' %}
     <div class="alert">
         <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-        Credenciales invalidas
+        Credenciales inválidasadas
     </div>
 {% endif %}
 <form method="POST" action="/login">
@@ -13,7 +13,29 @@
     <input type="password" name="password" placeholder="Contraseña" required/>
     <button class="btn" type="submit">Log in</button>
 </form>
+
+<form>
+    <h1> ¿No tienes cuenta? </h1>
+    <div class="center-align">
+        <a class="btnC" href="#" onclick="toggleForm()" style="margin-top: 10px;">Crear usuario</a>
+    </div>
+</form>
+
+<form id="crearUsuarioForm" style="display: none;">
+    <h1>Crear Usuario</h1>
+    <input type="text" name="nombre" placeholder="Nombre" required/>
+    <input type="email" name="email" placeholder="Correo electrónico" required/>
+    <input type="password" name="password" placeholder="Contraseña" required/>
+    <button class="btn" type="submit">Crear</button>
+</form>
+
+<script>
+    function toggleForm() {
+        var form = document.getElementById("crearUsuarioForm");
+        form.style.display = (form.style.display === "none") ? "block" : "none";
+    }
+</script>
   
 <footer>
-<h5> </a></h5>
+    <h5></a></h5>
 </footer>
