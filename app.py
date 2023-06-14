@@ -221,7 +221,6 @@ def sustituirArchivo():
     rutas = request.args.get('rutas')
     rutas = [ruta.strip() for ruta in rutas.split(',')]
     rutas = [ruta.replace('/', ' /') for ruta in rutas]
-    carpeta = request.args.get('ruta')    
     data = complementos.obtenerJson(userName)
     
     if(len(rutas) != 1):
@@ -254,13 +253,13 @@ def crearCarpeta():
 
     if(len(rutas) != 1):
         # Agregar el archivo al json
-        complementos.nuevaCarpeta(nombreCarpeta, userName, rutas, data)
+        error = complementos.nuevaCarpeta(nombreCarpeta, userName, rutas, data)
         archivos, folders = complementos.buscar_carpeta(data, rutas)
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
     return render_template('dashboard.html', email=email, name=userName, folders=folders, 
-                           archivos=archivos, rutas = rutas, error=False)
+                           archivos=archivos, rutas = rutas, errorCarpeta=error, nombreCarpeta=nombreCarpeta)
     
 
 # ---------------------- ELIMINAR CARPETA ----------------------
@@ -272,7 +271,6 @@ def eliminarCarpeta():
     rutas = request.args.get('rutas')
     rutas = [ruta.strip() for ruta in rutas.split(',')]
     rutas = [ruta.replace('/', ' /') for ruta in rutas]
-    carpeta = request.args.get('ruta') 
     data = complementos.obtenerJson(userName)
 
     if(len(rutas) != 1):
@@ -280,7 +278,6 @@ def eliminarCarpeta():
         complementos.eliminar_carpeta(data, rutas, userName)
         # Eliminar la ruta actual de la lista de rutas
         rutas.pop()
-        carpeta = rutas[-1]
         archivos, folders = complementos.buscar_carpeta(data, rutas)
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
@@ -289,6 +286,32 @@ def eliminarCarpeta():
                            archivos=archivos, rutas = rutas, error=False)
 
 
+# ---------------------- SUSTITUIR CARPETA ----------------------
+@app.route('/sustituirCarpeta')
+def sustituirCarpeta():
+    nombreCarpeta = request.args.get('nombre')
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    rutas.append(' / ' + nombreCarpeta)
+    
+    data = complementos.obtenerJson(userName)
 
+    if(len(rutas) != 1):
+        # Agregar el archivo al json
+        complementos.eliminar_carpeta(data, rutas, userName)
+        # Eliminar la ruta actual de la lista de rutas
+        rutas.pop()
+        # Agregar el archivo al json
+        data = complementos.obtenerJson(userName)
+        complementos.nuevaCarpeta(nombreCarpeta, userName, rutas, data)
+        archivos, folders = complementos.buscar_carpeta(data, rutas)
+    else:
+        folders, archivos = complementos.obtenerFileSystem(data)
+    
+    return render_template('dashboard.html', email=email, name=userName, folders=folders,
+                            archivos=archivos, rutas = rutas, error=False)
 if __name__ == '__main__':
     app.run()

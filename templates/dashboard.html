@@ -192,6 +192,26 @@
                               </div>
                             </div>
                             {% endif %}
+                            <!-- POP UP 7 ALERTA SUSTITUCION CARPETA-->
+                            {% if errorCarpeta %}
+                            <div class='dialog-ovelay fadeIn'>
+                                <div class='dialog zoomIn'>
+                                    <header>
+                                    <h3> Alerta! </h3>
+                                        <i class='fa fa-close'></i>
+                                    </header>
+                                    <div class='dialog-msg'>
+                                    <p id="nombreCarpeta" data-value="{{nombreCarpeta}}"> La carpeta ya existe. Desea sustituirla? </p> 
+                                    </div>
+                                    <footer>
+                                    <div class='controls'>
+                                        <button class='button button-primary-flat' onclick="sustituirCarpeta(this)"> Ok </button> 
+                                        <button class='button button-default-flat cancelAction' onclick="cancelarCarpeta(this)"> Cancelar </button> 
+                                    </div>
+                                    </footer>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

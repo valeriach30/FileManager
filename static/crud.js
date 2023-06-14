@@ -108,7 +108,6 @@ function enviarEliminar(){
     params.append('email', emailValue);
     params.append('name', userValue);
     params.append('rutas', rutasArray);
-    params.append('ruta', ultimaRuta);
     
     var url = '/eliminarCarpeta?' + params.toString();
     window.location.href = url;
@@ -178,7 +177,6 @@ function sustituirArchivo(element){
     params.append('email', emailValue);
     params.append('name', userValue);
     params.append('rutas', rutasArray);
-    params.append('ruta', ultimaRuta);
     params.append('nombre', nombre);
     params.append('contenido', contenido);
     params.append('extension', extension);
@@ -191,6 +189,35 @@ function cancelarArchivo(element){
     quitarPopUp(element);
 };
 
+// --------------------------- CARPETA REPETIDA ---------------------------
+
+function sustituirCarpeta(element){
+    quitarPopUp(element);
+    
+    // Obtener datos
+    var emailElement = document.getElementById("email");
+    var emailValue = emailElement.innerHTML;
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");
+    var nombre = document.getElementById("nombreCarpeta");
+    nombre = nombre.getAttribute("data-value");
+    
+    var rutasArray = obtenerRutas();
+    var ultimaRuta = rutasArray[rutasArray.length - 1];
+    
+    // Construir los parámetros de consulta
+    var params = new URLSearchParams();
+    params.append('email', emailValue);
+    params.append('name', userValue);
+    params.append('rutas', rutasArray);
+    params.append('nombre', nombre);
+    
+    var url = '/sustituirCarpeta?' + params.toString();
+    window.location.href = url;
+}
+function cancelarCarpeta(element){
+    quitarPopUp(element);
+};
 function quitarPopUp(element){
     $(element).parents('.dialog-ovelay').find('.dialog').removeClass('zoomIn').addClass('zoomOut');
     $(element).parents('.dialog-ovelay').fadeOut(function () {

@@ -146,7 +146,14 @@ def nuevaCarpeta(nombreCarpeta, usuario, rutas, data):
     rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
     rutas.pop(0)
     carpeta = buscarContenido(data["files"], rutas)
-    if carpeta is not None:
+    
+    # Determinar si hay una carpeta con el mismo nombre 
+    if(carpeta is not None):
+        presente = carpetaRepetida(carpeta, nombreCarpeta)
+    else:
+        presente = False
+        
+    if carpeta is not None and not presente:
         fecha_actual = date.today()
         fecha_actual = fecha_actual.strftime("%d/%m/%Y")
         carpetaNueva = {
@@ -167,8 +174,17 @@ def nuevaCarpeta(nombreCarpeta, usuario, rutas, data):
         nombreArchivo = usuario + '.json'
         with open(nombreArchivo, "w") as file:
             file.write(updated_json)
+        return False
+    else:
+        return True
 
-
+# Funcion que determina si dentro de una carpeta ya esta una carpeta con ese nombre
+def carpetaRepetida(json_carpeta, nombre_carpeta):
+    files = json_carpeta["files"]
+    for archivo in files:
+        if archivo["name"] == nombre_carpeta and archivo["type"] == "folder":
+            return True
+    return False
 # ---------------------- ELIMINAR CARPETA ----------------------
 
 def eliminar_carpeta(data, rutas, usuario):
@@ -187,7 +203,7 @@ def eliminar_carpeta(data, rutas, usuario):
 def eliminar_directorio(files, rutas_directorio):
     if len(rutas_directorio) == 0:
         return False
-
+    
     ruta_directorio = rutas_directorio[0]
 
     for file in files:
