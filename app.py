@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, url_for
 from pymongo import MongoClient
 from flask_socketio import SocketIO, send
 from flask_session import Session
@@ -390,13 +390,43 @@ def sustituirCarpeta():
     return render_template('dashboard.html', email=email, name=userName, folders=folders,
                             archivos=archivos, rutas = rutas, error=False, storage=storage)
 
+# ---------------------- MOVER CARPETA ----------------------
 
+@app.route('/moverCarpeta')
+def moverCarpeta():
+    print("==================================")
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    destino = request.args.get('selectedValue')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    data = complementos.obtenerJson(userName)
+
+    if(len(rutas) != 1):
+        error, nombreCarpeta = complementos.moverCarpeta(data, userName, rutas, destino)
+        archivos, folders = complementos.buscar_carpeta(data, rutas)
+    else:
+        folders, archivos = complementos.obtenerFileSystem(data)
+    
+    if(not error):
+        storage = complementos.determinarEspacio(userName)
+        return render_template('dashboard.html', email=email, name=userName, folders=folders,
+                                archivos=archivos, rutas = rutas, storage=storage)
+    
+    # Carpeta repetida, determinar si se quiere sustituir
+    else:
+        storage = complementos.determinarEspacio(userName)
+        return render_template('dashboard.html', email=email, name=userName, folders=folders,
+                                archivos=archivos, rutas = rutas, storage=storage)
+    
+# ---------------------- OBTENER CARPETAS ----------------------
 def obtenerCarpetas(data):
     carpetas = []
     carpetas = complementos.obtenerCarpetas(data)
-    print("CARPETAS")
     carpetas.pop(0)
-    print(carpetas)
     return carpetas
+
+# ---------------------- MAIN ----------------------
 if __name__ == '__main__':
     app.run()
