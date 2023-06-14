@@ -186,6 +186,13 @@ h6 {
     color: white;
     margin-bottom: 15px;
   }
+
+  .alertCorrect {
+    padding: 20px;
+    background-color: #32c5df; /* Blue */
+    color: white;
+    margin-bottom: 15px;
+  }
   
   /* The close button */
   .closebtn {

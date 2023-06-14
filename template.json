@@ -1,0 +1,20 @@
+{
+    "files": [
+        {
+            "name": "Shared",
+            "type": "folder",
+            "created_at": "2023-06-11",
+            "updated": "2023-06-15",
+            "user": "valeria",
+            "files": []
+        },
+        {
+            "name": "Raiz",
+            "type": "folder",
+            "created_at": "2023-06-11",
+            "updated": "2023-06-15",
+            "user": "valeria",
+            "files": []
+            }
+    ]
+}

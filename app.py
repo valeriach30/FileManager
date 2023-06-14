@@ -4,6 +4,7 @@ from flask_socketio import SocketIO, send
 from flask_session import Session
 import secrets
 import complementos
+import json
 
 
 client = MongoClient('mongodb+srv://Kdaniel06:Dani060401$@cluster0.t10iglg.mongodb.net/?retryWrites=true&w=majority')
@@ -51,6 +52,46 @@ def login():
             return render_template('login.html', error='error')
 
     return render_template('login.html')
+
+
+@app.route('/crearUsuario', methods=['POST'])
+def crearUsuarioRoute():
+    # Obtener los datos del formulario
+    email = request.form['email']
+    password = int(request.form['password'])
+    nombre = request.form['nombre']
+    espacio = int(request.form['espacio'])
+
+    usuario = {
+        'name': nombre,
+        'password': password,
+        'email': email,
+        'files':[],
+        'storage': espacio
+    }
+
+    existeUsuario = collection.find_one({"email": email})
+    #El usuario ya esta registrado, manda error
+    if existeUsuario:
+        return render_template('login.html', error1='error1')
+    else:
+        #Lo mete en la base de datos
+        collection.insert_one(usuario)
+        #Crea el json para el usuario con el contenido del json template
+        rutaPlantilla = 'template.json'
+        archivoDestino = nombre + ".json"
+
+        #Archivo template.json
+        with open(rutaPlantilla, 'r') as archivo_original:
+            contenido_json = json.load(archivo_original)
+
+        with open(archivoDestino, 'w') as archivoDestino:
+            json.dump(contenido_json, archivoDestino)
+
+
+
+        return render_template('login.html', exito='exito')
+
 
 # ---------------------- DASHBOARD ----------------------
 

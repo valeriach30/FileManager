@@ -7,6 +7,21 @@
         Credenciales inválidasadas
     </div>
 {% endif %}
+
+{% if error1 == 'error1' %}
+    <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        El usuario ya esta registrado
+    </div>
+{% endif %}
+
+{% if exito == 'exito' %}
+    <div class="alertCorrect">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        Usuario creado Correctamente
+    </div>
+{% endif %}
+
 <form method="POST" action="/login">
     <h1> Log In</h1>
     <input type="email" name="email" placeholder="Correo electrónico" required/>
@@ -21,13 +36,15 @@
     </div>
 </form>
 
-<form id="crearUsuarioForm" style="display: none;">
+<form id="crearUsuarioForm" method="post" action="/crearUsuario" style="display: none;">
     <h1>Crear Usuario</h1>
     <input type="text" name="nombre" placeholder="Nombre" required/>
     <input type="email" name="email" placeholder="Correo electrónico" required/>
     <input type="password" name="password" placeholder="Contraseña" required/>
-    <button class="btn" type="submit">Crear</button>
+    <input type="number" name="espacio" placeholder="Espacio" required/>
+    <button id="createUserButton" class="btn" type="submit">Crear</button>
 </form>
+
 
 <script>
     function toggleForm() {
