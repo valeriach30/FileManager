@@ -155,10 +155,13 @@ def crearArchivo():
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
-    return render_template('dashboard.html', email=email, name=userName, folders=folders,
+    if(error != None):
+        return render_template('dashboard.html', email=email, name=userName, folders=folders,
                             archivos=archivos, rutas = rutas, error=error,
                             nombreArchivo=nombreArchivo, contenido = contenido)
-    
+    else:
+        return render_template('dashboard.html', email=email, name=userName, folders=folders,
+                            archivos=archivos, rutas = rutas, errorEspacio=True)
 
 
 # ---------------------- EDITAR ARCHIVO ----------------------

@@ -22,6 +22,12 @@
 </head>
 <title>Dashboard</title>
 <body>
+{% if errorEspacio %}
+<div class="alert">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    Ya no hay espacio disponible!
+</div>
+{% endif %}
 <div class="container">
     <div class="view-account">
         <section class="module">
