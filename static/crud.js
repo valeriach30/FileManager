@@ -11,6 +11,9 @@ function eliminarCarpeta() {
 function editarArchivo() {
     document.getElementById("formEditarArchivo").style.display = "block";
 }
+function moverCarpeta() {
+    document.getElementById("formMoverCarpeta").style.display = "block";
+}
 
 // --------------------------- CREAR ARCHIVO ---------------------------
 function enviarForm(){
@@ -113,11 +116,18 @@ function enviarEliminar(){
     window.location.href = url;
 }
 
+// --------------------------- MOVER CARPETA ---------------------------
+function moverCarpetaF(){
+    alert("MOVER CARPETA")
+}
+
 // --------------------------- CLOSE FORM ---------------------------
 function closeForm() {
     document.getElementById("myForm").style.display = "none";
     document.getElementById("formCarpeta").style.display = "none";
     document.getElementById("formElimCarpeta").style.display = "none";
+    document.getElementById("formEditarArchivo").style.display = "none";
+    document.getElementById("formMoverCarpeta").style.display = "none";
 }
 
 function obtenerRutas(){

@@ -34,7 +34,10 @@ $(document).ready(function() {
 
         var rutaElement = document.getElementById("rutas");
         var rutaValue = rutaElement.getAttribute("data-value");
-
+        
+        var carpetasRutasElement = document.getElementById("carpetasRutas");
+        var carpetasRutasValue = carpetasRutasElement.getAttribute("data-value");
+        
         // Obtener carpeta
         var carpetaId = event.target.id;
         var archivoElement = document.getElementById(carpetaId);
@@ -48,6 +51,7 @@ $(document).ready(function() {
         params.append('email', emailValue);
         params.append('name', userValue);
         params.append('ruta', rutaValue);
+        params.append('carpetasRutas', carpetasRutasValue);
 
         var url = '/subcarpeta?' + params.toString();
         window.location.href = url;

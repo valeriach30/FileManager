@@ -346,6 +346,19 @@ def obtenerFileSystem(data):
     return folders, archivos
 
 
+# ---------------------- OBTENER CARPETAS ----------------------
+def obtenerCarpetas(data, ruta_actual="", rutas_carpetas=[]):
+    if "files" in data:
+        for item in data["files"]:
+            if item["type"] == "folder":
+                nombre_carpeta = item["name"]
+                nueva_ruta = f"{ruta_actual}/{nombre_carpeta}" if ruta_actual else nombre_carpeta
+                rutas_carpetas.append(nueva_ruta)
+                obtenerCarpetas(item, nueva_ruta, rutas_carpetas)
+    
+    return rutas_carpetas
+
+
 # ---------------------- FUNCIONES STORAGE ----------------------
 
 def determinarEspacio(usuario):
