@@ -60,7 +60,7 @@ def dashboard():
     email = request.args.get('email')
     userName = request.args.get('name')
     currentRoute = eval(request.args.get('route'))
-    
+    storage = determinarEspacio(userName)
     if email:
         
         # Cargar el JSON
@@ -71,7 +71,7 @@ def dashboard():
         
         # Usuario autenticado, mostrar dashboard
         return render_template('dashboard.html', email=email, name=userName, folders=folders, 
-                               archivos=archivos, rutas = currentRoute, error=False)
+                               archivos=archivos, rutas = currentRoute, error=False, storage=storage)
     else:
         # Usuario no autenticado, redirigir al inicio de sesión
         return redirect('/login',  error='')
@@ -84,7 +84,7 @@ def subcarpeta():
     email = request.args.get('email')
     userName = request.args.get('name')
     currentRoute = eval(request.args.get('ruta'))
-    
+    storage = determinarEspacio(userName)
     # Cargar el JSON
     data = complementos.obtenerJson(userName)
 
@@ -99,7 +99,7 @@ def subcarpeta():
     
     # Redirigir
     return render_template('dashboard.html', email=email, name=userName, folders=folders, 
-                           archivos=archivos, rutas = currentRoute, error=False)
+                           archivos=archivos, rutas = currentRoute, error=False, storage=storage)
 
 
 @app.route('/rutaAnterior')
@@ -108,6 +108,7 @@ def rutaAnterior():
     email = request.args.get('email')
     userName = request.args.get('name')
     currentRoute = eval(request.args.get('rutas'))
+    
 
     data = complementos.obtenerJson(userName)
         
@@ -129,8 +130,9 @@ def rutaAnterior():
         folders, archivos = complementos.obtenerFileSystem(data)
 
     # Redirigir
+    storage = determinarEspacio(userName)
     return render_template('dashboard.html', email=email, name=userName, folders=folders, 
-                           archivos=archivos, rutas = currentRoute, error=False)
+                           archivos=archivos, rutas = currentRoute, error=False, storage=storage)
 
 
 # ---------------------- CREAR ARCHIVO ----------------------
@@ -148,6 +150,7 @@ def crearArchivo():
     carpeta = request.args.get('ruta')    
     data = complementos.obtenerJson(userName)
     
+
     if(len(rutas) != 1):
         # Agregar el archivo al json
         error = complementos.nuevoArchivo(nombreArchivo, contenido, extension, userName, rutas, data)
@@ -155,13 +158,14 @@ def crearArchivo():
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
+    storage = determinarEspacio(userName)
     if(error != None):
         return render_template('dashboard.html', email=email, name=userName, folders=folders,
                             archivos=archivos, rutas = rutas, error=error,
-                            nombreArchivo=nombreArchivo, contenido = contenido)
+                            nombreArchivo=nombreArchivo, contenido = contenido, storage=storage)
     else:
         return render_template('dashboard.html', email=email, name=userName, folders=folders,
-                            archivos=archivos, rutas = rutas, errorEspacio=True)
+                            archivos=archivos, rutas = rutas, errorEspacio=True, storage=storage)
 
 
 # ---------------------- EDITAR ARCHIVO ----------------------
@@ -178,16 +182,22 @@ def editarArchivo():
     rutas = [ruta.replace('/', ' /') for ruta in rutas]
     nuevoContenido = request.args.get('nuevoContenido')
     data = complementos.obtenerJson(userName)
+    
 
     if(len(rutas) != 1):
         # Editar el archivo
-        complementos.editarArchivo(rutas, data, nombreArchivo, nuevoContenido, userName)    
+        exito = complementos.editarArchivo(rutas, data, nombreArchivo, nuevoContenido, userName)    
         archivos, folders = complementos.buscar_carpeta(data, rutas)
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
-    return render_template('dashboard.html', email=email, name=userName, folders=folders, 
-                           archivos=archivos, rutas = rutas, error=False)
+    storage = determinarEspacio(userName)
+    if(exito):
+        return render_template('dashboard.html', email=email, name=userName, folders=folders, 
+                            archivos=archivos, rutas = rutas, error=False, storage=storage)
+    else:
+        return render_template('dashboard.html', email=email, name=userName, folders=folders,
+                            archivos=archivos, rutas = rutas, errorEspacio=True, storage=storage)
 
 # ---------------------- ELIMINAR ARCHIVO ----------------------
 
@@ -199,7 +209,6 @@ def eliminarArchivo():
     nombreArchivo = request.args.get('nombreAr')
     rutas = [ruta.strip() for ruta in rutas.split(',')]
     rutas = [ruta.replace('/', ' /') for ruta in rutas]
-
     data = complementos.obtenerJson(userName)
 
     if(len(rutas) != 1):
@@ -209,8 +218,9 @@ def eliminarArchivo():
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
+    storage = determinarEspacio(userName)
     return render_template('dashboard.html', email=email, name=userName, folders=folders, 
-                           archivos=archivos, rutas = rutas, error=False)
+                           archivos=archivos, rutas = rutas, error=False, storage=storage)
 
 
 # ---------------------- SUSTITUIR ARCHIVO ----------------------
@@ -225,7 +235,7 @@ def sustituirArchivo():
     rutas = [ruta.strip() for ruta in rutas.split(',')]
     rutas = [ruta.replace('/', ' /') for ruta in rutas]
     data = complementos.obtenerJson(userName)
-    
+
     if(len(rutas) != 1):
         # Eliminar el archivo del json
         complementos.eliminarArchivo(rutas, data, nombreArchivo + '.txt', userName)
@@ -237,8 +247,9 @@ def sustituirArchivo():
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
+    storage = determinarEspacio(userName)
     return render_template('dashboard.html', email=email, name=userName, folders=folders,
-                            archivos=archivos, rutas = rutas, error=False)
+                            archivos=archivos, rutas = rutas, error=False, storage=storage)
 
 
 # ---------------------- CREAR CARPETA ----------------------
@@ -253,6 +264,7 @@ def crearCarpeta():
     rutas = [ruta.replace('/', ' /') for ruta in rutas]
     carpeta = request.args.get('ruta')    
     data = complementos.obtenerJson(userName)
+    
 
     if(len(rutas) != 1):
         # Agregar el archivo al json
@@ -261,8 +273,10 @@ def crearCarpeta():
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
+    storage = determinarEspacio(userName)
     return render_template('dashboard.html', email=email, name=userName, folders=folders, 
-                           archivos=archivos, rutas = rutas, errorCarpeta=error, nombreCarpeta=nombreCarpeta)
+                           archivos=archivos, rutas = rutas, errorCarpeta=error, 
+                           nombreCarpeta=nombreCarpeta, storage=storage)
     
 
 # ---------------------- ELIMINAR CARPETA ----------------------
@@ -275,6 +289,7 @@ def eliminarCarpeta():
     rutas = [ruta.strip() for ruta in rutas.split(',')]
     rutas = [ruta.replace('/', ' /') for ruta in rutas]
     data = complementos.obtenerJson(userName)
+    
 
     if(len(rutas) != 1):
         # Agregar el archivo al json
@@ -285,8 +300,9 @@ def eliminarCarpeta():
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
+    storage = determinarEspacio(userName)
     return render_template('dashboard.html', email=email, name=userName, folders=folders, 
-                           archivos=archivos, rutas = rutas, error=False)
+                           archivos=archivos, rutas = rutas, error=False, storage=storage)
 
 
 # ---------------------- SUSTITUIR CARPETA ----------------------
@@ -299,7 +315,6 @@ def sustituirCarpeta():
     rutas = [ruta.strip() for ruta in rutas.split(',')]
     rutas = [ruta.replace('/', ' /') for ruta in rutas]
     rutas.append(' / ' + nombreCarpeta)
-    
     data = complementos.obtenerJson(userName)
 
     if(len(rutas) != 1):
@@ -314,7 +329,15 @@ def sustituirCarpeta():
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
+    storage = determinarEspacio(userName)
     return render_template('dashboard.html', email=email, name=userName, folders=folders,
-                            archivos=archivos, rutas = rutas, error=False)
+                            archivos=archivos, rutas = rutas, error=False, storage=storage)
+
+
+def determinarEspacio(usuario):
+    user = collection.find_one({"name": usuario})
+    storage = user.get("storage", 0)
+    return storage
+
 if __name__ == '__main__':
     app.run()
