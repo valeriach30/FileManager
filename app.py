@@ -375,11 +375,11 @@ def sustituirCarpeta():
     data = complementos.obtenerJson(userName)
     
     if(len(rutas) != 1):
-        # Agregar el archivo al json
+        # Eliminar carpeta
         complementos.eliminar_carpeta(data, rutas, userName)
         # Eliminar la ruta actual de la lista de rutas
         rutas.pop()
-        # Agregar el archivo al json
+        # Agregar nueva carpeta
         data = complementos.obtenerJson(userName)
         complementos.nuevaCarpeta(nombreCarpeta, userName, rutas, data)
         archivos, folders = complementos.buscar_carpeta(data, rutas)
@@ -394,7 +394,6 @@ def sustituirCarpeta():
 
 @app.route('/moverCarpeta')
 def moverCarpeta():
-    print("==================================")
     userName = request.args.get('name')
     email = request.args.get('email')
     rutas = request.args.get('rutas')
@@ -402,9 +401,9 @@ def moverCarpeta():
     rutas = [ruta.strip() for ruta in rutas.split(',')]
     rutas = [ruta.replace('/', ' /') for ruta in rutas]
     data = complementos.obtenerJson(userName)
-
+    
     if(len(rutas) != 1):
-        error, nombreCarpeta = complementos.moverCarpeta(data, userName, rutas, destino)
+        error, carpetaNueva = complementos.moverCarpeta(data, userName, rutas, destino)
         archivos, folders = complementos.buscar_carpeta(data, rutas)
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
@@ -418,8 +417,29 @@ def moverCarpeta():
     else:
         storage = complementos.determinarEspacio(userName)
         return render_template('dashboard.html', email=email, name=userName, folders=folders,
-                                archivos=archivos, rutas = rutas, storage=storage)
+                                archivos=archivos, rutas = rutas, storage=storage, 
+                                errorMovimiento= True, destino=destino)
+
+@app.route('/sustituirMover')
+def sustituirMover():
     
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    destino = request.args.get('destino')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    data = complementos.obtenerJson(userName)
+    
+    if(len(rutas) != 1):
+        complementos.moverSustituir(data, userName, rutas, destino)
+        archivos, folders = complementos.buscar_carpeta(data, rutas)
+    else:
+        folders, archivos = complementos.obtenerFileSystem(data)
+    storage = complementos.determinarEspacio(userName)
+    return render_template('dashboard.html', email=email, name=userName, folders=folders,
+                            archivos=archivos, rutas = rutas, storage=storage)
+
 # ---------------------- OBTENER CARPETAS ----------------------
 def obtenerCarpetas(data):
     carpetas = []

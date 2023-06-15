@@ -257,6 +257,26 @@
                                     <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
                                 </div>
                             </div>
+                            <!-- POP UP 9 ALERTA SUSTITUCION CARPETA-->
+                            {% if errorMovimiento %}
+                            <div class='dialog-ovelay fadeIn'>
+                                <div class='dialog zoomIn'>
+                                    <header>
+                                    <h3> Alerta! </h3>
+                                        <i class='fa fa-close'></i>
+                                    </header>
+                                    <div class='dialog-msg'>
+                                    <p id="destino" data-value="{{destino}}"> La carpeta ya existe. Desea sustituirla? </p> 
+                                    </div>
+                                    <footer>
+                                    <div class='controls'>
+                                        <button class='button button-primary-flat' onclick="sustitucionMovimiento(this)"> Ok </button> 
+                                        <button class='button button-default-flat cancelAction' onclick="cancelarCarpeta(this)"> Cancelar </button> 
+                                    </div>
+                                    </footer>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

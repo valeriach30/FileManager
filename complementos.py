@@ -236,6 +236,7 @@ def carpetaRepetida(json_carpeta, nombre_carpeta):
 def eliminar_carpeta(data, rutas, usuario):
     rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
     rutas.pop(0)
+    
     eliminar_directorio(data["files"], rutas)
     # Convierte el objeto Python de vuelta a JSON
     updated_json = json.dumps(data)
@@ -336,9 +337,6 @@ def moverCarpeta(data, usuario, rutas, destino):
     
     carpetaDestino = buscarContenido(data["files"], destino)
     
-    # Eliminar la carpeta de la direccion pasada
-    eliminar_directorio(data["files"], rutas)
-
     # Agregar la carpeta en el destino
     
     # Determinar si hay una carpeta con el mismo nombre 
@@ -348,6 +346,9 @@ def moverCarpeta(data, usuario, rutas, destino):
         presente = False
     
     if not presente:
+        # Eliminar la carpeta de la direccion pasada
+        eliminar_directorio(data["files"], rutas)
+
         # Agrega la carpeta al destino
         carpetaDestino["files"].append(carpetaNueva)
 
@@ -368,7 +369,40 @@ def moverCarpeta(data, usuario, rutas, destino):
         with open(nombreArchivo, "w") as file:
             file.write(updated_json)
 
-        return True, carpetaNueva["name"]
+        return True, carpetaNueva
+
+
+def moverSustituir(data, usuario, rutas, destino):
+    rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
+    rutas.pop(0)
+    
+    if("/" in destino):
+        destino = destino.split("/")
+    else:
+        lista = []
+        lista.append(destino)
+        destino = lista
+    
+    carpetaNueva = buscarContenido(data["files"], rutas)
+    eliminar_directorio(data["files"], rutas)
+    
+    # Eliminar la carpeta repetida del destino
+    destino.append(carpetaNueva["name"])
+    respuesta = eliminar_directorio(data["files"], destino)
+    
+    # Agrega la carpeta al destino
+    destino.pop()
+    carpetaDestino = buscarContenido(data["files"], destino)
+    carpetaDestino["files"].append(carpetaNueva)
+
+    # Convierte el objeto Python de vuelta a JSON
+    updated_json = json.dumps(data)
+
+    # Actualiza el archivo local con el nuevo JSON
+    nombreArchivo = usuario + '.json'
+    with open(nombreArchivo, "w") as file:
+        file.write(updated_json)
+
     
 # ---------------------- OBTENER FILE SYSTEM ----------------------
 

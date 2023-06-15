@@ -251,6 +251,35 @@ function sustituirCarpeta(element){
     var url = '/sustituirCarpeta?' + params.toString();
     window.location.href = url;
 }
+
+function sustitucionMovimiento(element){
+    
+    quitarPopUp(element);
+    
+    // Obtener datos
+    var emailElement = document.getElementById("email");
+    var emailValue = emailElement.innerHTML;
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");
+    
+    var rutasElement = document.getElementById("destino");
+    var rutasValue = rutasElement.getAttribute("data-value");
+    rutasValue = rutasValue.replace(/[\[\]']+/g, '');
+    var destino = rutasValue.split(",");
+    var rutasArray = obtenerRutas();
+    
+
+    // Construir los parámetros de consulta
+    var params = new URLSearchParams();
+    params.append('email', emailValue);
+    params.append('name', userValue);
+    params.append('destino', destino);
+    params.append('rutas', rutasArray);
+    
+    var url = '/sustituirMover?' + params.toString();
+    window.location.href = url;
+}
+
 function cancelarCarpeta(element){
     quitarPopUp(element);
 };
