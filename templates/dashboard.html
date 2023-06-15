@@ -121,9 +121,9 @@
                                         <p>Usuario: </p>
                                         <p id="usuarioP" style="color: rgb(180, 172, 172);"></p>
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Edit" onclick="editarArchivo()"><i class="fa fa-pencil-square"></i></button>
-                                        <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Copy1"><i class="fa fa-desktop"></i></button>
-                                        <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Copy2"><i class="fa fa-cloud-download"></i></button>
-                                        <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Copy3"><i class="fa fa-files-o"></i></button> 
+                                        <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Cargar" onclick="cargarArchivo()"><i class="fa fa-desktop"></i></button>
+                                        <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Descargar" onclick="descargarArchivo()" ><i class="fa fa-cloud-download"></i></button>
+                                        <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Copiar" onclick="copiarArchivo()"><i class="fa fa-files-o"></i></button> 
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Move" onclick="moverArchivo()"><i class="fa fa-arrows"></i></button> 
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Share"><i class="fa fa-share-alt-square"></i></button> 
                                         <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Delete" onclick="eliminarArchivo()"><i class="fa fa-trash-o"></i></button>
@@ -261,6 +261,115 @@
                                     <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
                                 </div>
                             </div>
+                            <!--POP UP 9 CARGAR ARCHIVO-->
+                            <div class="form-popup" id="formCargarArchivo">
+                                <div class="form-container">
+                                    <h2>Cargar Archivo</h2>
+                              
+                                    <label for="nombre"><b>Escoger a donde copiar este archivo</b></label>
+                                    <select name="language" id="language" style="padding: 15px;">
+                                        {% if carpetasRutas %}
+                                            {% for ruta in carpetasRutas%}
+                                            <option value="{{ruta}}">{{ruta}}</option>
+                                            {% endfor%}
+                                        {% endif %}
+                                    </select>
+                                    <p id="carpetasRutas" data-value="{{carpetasRutas}}"></p>
+                                    <button type="submit" class="btn" onclick="moverArchivoF()">Mover</button>
+                                    <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
+                                </div>
+                            </div>
+                            <!--POP UP 10 DESCARGAR ARCHIVO-->
+                            <div class="form-popup" id="formDescargarArchivo">
+                                <div class="form-container">
+                                    <h2>Descargar Archivo</h2>
+                              
+                                    <label for="nombre"><b>Escoger a donde copiar este archivo</b></label>
+                                    <select name="language" id="language" style="padding: 15px;">
+                                        {% if carpetasRutas %}
+                                            {% for ruta in carpetasRutas%}
+                                            <option value="{{ruta}}">{{ruta}}</option>
+                                            {% endfor%}
+                                        {% endif %}
+                                    </select>
+                                    <p id="carpetasRutas" data-value="{{carpetasRutas}}"></p>
+                                    <button type="submit" class="btn" onclick="moverArchivoF()">Mover</button>
+                                    <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
+                                </div>
+                            </div>
+                            <!--POP UP 11 COPIAR ARCHIVO-->
+                            <div class="form-popup" id="formCopiarArchivo">
+                                <div class="form-container">
+                                    <h2>Copiar Archivo</h2>
+                              
+                                    <label for="nombre"><b>Escoger a donde copiar este archivo</b></label>
+                                    <select name="language" id="language" style="padding: 15px;">
+                                        {% if carpetasRutas %}
+                                            {% for ruta in carpetasRutas%}
+                                            <option value="{{ruta}}">{{ruta}}</option>
+                                            {% endfor%}
+                                        {% endif %}
+                                    </select>
+                                    <p id="carpetasRutas" data-value="{{carpetasRutas}}"></p>
+                                    <button type="submit" class="btn" onclick="moverArchivoF()">Mover</button>
+                                    <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
+                                </div>
+                            </div>
+                             <!--POP UP 12 CARGAR CARPETA-->
+                             <div class="form-popup" id="formCargarCarpeta">
+                                <div class="form-container">
+                                    <h2>Cargar Carpeta</h2>
+                              
+                                    <label for="nombre"><b>Escoger a donde copiar este archivo</b></label>
+                                    <select name="language" id="language" style="padding: 15px;">
+                                        {% if carpetasRutas %}
+                                            {% for ruta in carpetasRutas%}
+                                            <option value="{{ruta}}">{{ruta}}</option>
+                                            {% endfor%}
+                                        {% endif %}
+                                    </select>
+                                    <p id="carpetasRutas" data-value="{{carpetasRutas}}"></p>
+                                    <button type="submit" class="btn" onclick="moverArchivoF()">Mover</button>
+                                    <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
+                                </div>
+                            </div>
+                            <!--POP UP 13 DESCARGAR CARPETA-->
+                            <div class="form-popup" id="formDescargarCarpeta">
+                                <div class="form-container">
+                                    <h2>Descargar Carpeta</h2>
+                              
+                                    <label for="nombre"><b>Escoger a donde copiar este archivo</b></label>
+                                    <select name="language" id="language" style="padding: 15px;">
+                                        {% if carpetasRutas %}
+                                            {% for ruta in carpetasRutas%}
+                                            <option value="{{ruta}}">{{ruta}}</option>
+                                            {% endfor%}
+                                        {% endif %}
+                                    </select>
+                                    <p id="carpetasRutas" data-value="{{carpetasRutas}}"></p>
+                                    <button type="submit" class="btn" onclick="moverArchivoF()">Mover</button>
+                                    <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
+                                </div>
+                            </div>
+                            <!--POP UP 14 COPIAR CARPETA-->
+                            <div class="form-popup" id="formCopiarCarpeta">
+                                <div class="form-container">
+                                    <h2>Copiar Carpeta</h2>
+                              
+                                    <label for="nombre"><b>Escoger a donde copiar este archivo</b></label>
+                                    <select name="language" id="language" style="padding: 15px;">
+                                        {% if carpetasRutas %}
+                                            {% for ruta in carpetasRutas%}
+                                            <option value="{{ruta}}">{{ruta}}</option>
+                                            {% endfor%}
+                                        {% endif %}
+                                    </select>
+                                    <p id="carpetasRutas" data-value="{{carpetasRutas}}"></p>
+                                    <button type="submit" class="btn" onclick="moverArchivoF()">Mover</button>
+                                    <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
