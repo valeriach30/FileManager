@@ -17,6 +17,26 @@ function moverCarpeta() {
 function moverArchivo() {
     document.getElementById("formMoverArchivo").style.display = "block";
 }
+/*Funciones de copiado*/
+function cargarArchivo() {
+    document.getElementById("formCargarArchivo").style.display = "block";
+}
+function descargarArchivo() {
+    document.getElementById("formDescargarArchivo").style.display = "block";
+}
+function copiarArchivo() {
+    document.getElementById("formCopiarArchivo").style.display = "block";
+}
+function cargarCarpeta() {
+    document.getElementById("formCargarCarpeta").style.display = "block";
+}
+function descargarCarpeta() {
+    document.getElementById("formDescargarCarpeta").style.display = "block";
+}
+function copiarCarpeta() {
+    document.getElementById("formCopiarCarpeta").style.display = "block";
+}
+
 
 // --------------------------- CREAR ARCHIVO ---------------------------
 function enviarForm(){
@@ -154,6 +174,13 @@ function closeForm() {
     document.getElementById("formEditarArchivo").style.display = "none";
     document.getElementById("formMoverCarpeta").style.display = "none";
     document.getElementById("formMoverArchivo").style.display = "none";
+    document.getElementById("formCargarArchivo").style.display = "none";
+    document.getElementById("formDescargarArchivo").style.display = "none";
+    document.getElementById("formCopiarArchivo").style.display = "none";
+    document.getElementById("formCargarCarpeta").style.display = "none";
+    document.getElementById("formDescargarCarpeta").style.display = "none";
+    document.getElementById("formCopiarCarpeta").style.display = "none";
+
 }
 
 function obtenerRutas(){

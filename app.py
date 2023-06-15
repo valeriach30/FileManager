@@ -258,6 +258,34 @@ def editarArchivo():
                             archivos=archivos, rutas = rutas, errorEspacio=True, 
                             storage=storage)
 
+# ---------------------- COPIAR ARCHIVO ----------------------
+#COPIAR
+@app.route('/copiarArchivo')
+def copiarArchivo():
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    data = complementos.obtenerJson(userName)
+#CARGAR
+@app.route('/cargarArchivo')
+def cargarArchivo():
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    data = complementos.obtenerJson(userName)
+#DESCARGAR
+@app.route('/descargarArchivo')
+def descargarArchivo():
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    data = complementos.obtenerJson(userName)
 # ---------------------- ELIMINAR ARCHIVO ----------------------
 
 @app.route('/eliminarArchivo')
@@ -336,6 +364,34 @@ def crearCarpeta():
                            archivos=archivos, rutas = rutas, errorCarpeta=error, 
                            nombreCarpeta=nombreCarpeta, storage=storage)
     
+# ---------------------- COPIAR CARPETA ----------------------
+#COPIAR
+@app.route('/copiarCarpeta')
+def copiarCarpeta():
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    data = complementos.obtenerJson(userName)
+#CARGAR
+@app.route('/cargarCarpeta')
+def cargarCarpeta():
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    data = complementos.obtenerJson(userName)
+#DESCARGAR
+@app.route('/descargarCarpeta')
+def descargarCarpeta():
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    data = complementos.obtenerJson(userName)
 
 # ---------------------- ELIMINAR CARPETA ----------------------
 
