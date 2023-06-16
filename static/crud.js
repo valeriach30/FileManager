@@ -160,6 +160,62 @@ function copiarCarpetaF(){
     var url = '/copiarCarpeta?' + params.toString();
     window.location.href = url;
 }
+
+// --------------------------- CARGAR CARPETA ---------------------------
+function cargarCarpetaF(){
+    //Obtener datos
+    var emailElement = document.getElementById("email");
+    var emailValue = emailElement.innerHTML;
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");
+    var fileElement = document.getElementById("archivo"); 
+    //pregunta si hay archivo
+    if (fileElement) {
+        var lector = new FileReader();
+
+        const archivo = fileElement.files[0];
+
+        if (archivo) {
+            const lector = new FileReader();
+
+            lector.onload = function(e) {
+                contenido = e.target.result;
+                console.log('Contenido del archivo:', contenido);
+                //var contenido = contenidoElement.value;
+                var nombre = archivo.name; 
+                nombre = nombre.split('.').slice(0, -1).join('.');
+                var extension = archivo.type;
+                var rutasArray = obtenerRutas();
+                var ultimaRuta = rutasArray[rutasArray.length - 1];
+
+                //Construir los parámetros de consulta
+                var params = new URLSearchParams();
+                params.append('email', emailValue);
+                params.append('name', userValue);
+                params.append('rutas', rutasArray);
+                params.append('ruta', ultimaRuta);
+                params.append('nombre', nombre);
+                params.append('contenido', contenido);
+                params.append('extension', extension);
+                
+                var url = '/crearArchivo?' + params.toString();
+                window.location.href = url;  
+            };
+
+            lector.readAsText(archivo);
+  
+        }
+
+    } else {
+        // No se seleccionó ningún archivo
+        console.log("No se seleccionó ningún archivo.");
+    }
+  
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 // --------------------------- MOVER CARPETA ---------------------------
 function moverCarpetaF(){
      // Obtener datos

@@ -68,7 +68,7 @@
                                 <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Share"><i class="fa fa-share-alt-square"></i></button> 
                                 <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Move" onclick="moverCarpeta()"><i class="fa fa-arrows"></i></button> 
                                 <!--Botones para copiar carpetas-->
-                                <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Move" onclick="cargarCarpeta()"><i class="fa fa-desktop"></i></button>
+                                <button id = "buttonCargar" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Move" onclick="cargarCarpeta()"><i class="fa fa-desktop"></i></input>
                                 <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Move" onclick="descargarCarpeta()"><i class="fa fa-cloud-download"></i></button>
                                 <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Move" onclick="copiarCarpeta()"><i class="fa fa-files-o"></i></button>
                             </div>
@@ -287,13 +287,7 @@
                                     <h2>Cargar Archivo</h2>
                               
                                     <label for="nombre"><b>Escoger a donde copiar este archivo</b></label>
-                                    <select name="language" id="language" style="padding: 15px;">
-                                        {% if carpetasRutas %}
-                                            {% for ruta in carpetasRutas%}
-                                            <option value="{{ruta}}">{{ruta}}</option>
-                                            {% endfor%}
-                                        {% endif %}
-                                    </select>
+                                    <input type="file" id="fileInput">
                                     <p id="carpetasRutas" data-value="{{carpetasRutas}}"></p>
                                     <button type="submit" class="btn" onclick="moverArchivoF()">Mover</button>
                                     <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
@@ -340,16 +334,10 @@
                                 <div class="form-container">
                                     <h2>Cargar Carpeta</h2>
                               
-                                    <label for="nombre"><b>Escoger a donde copiar este archivo</b></label>
-                                    <select name="language" id="carpetaSelect" style="padding: 15px;">
-                                        {% if carpetasRutas %}
-                                            {% for ruta in carpetasRutas%}
-                                            <option value="{{ruta}}">{{ruta}}</option>
-                                            {% endfor%}
-                                        {% endif %}
-                                    </select>
+                                    <label for="archivo"><b>Escoger el archivo que desea cargar</b></label>
+                                    <input type ="file" id="archivo" required>
                                     <p id="carpetasRutas" data-value="{{carpetasRutas}}"></p>
-                                    <button type="submit" class="btn" onclick="moverArchivoF()">Mover</button>
+                                    <button type="submit" class="btn" onclick="cargarCarpetaF()">Cargar</button>
                                     <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
                                 </div>
                             </div>

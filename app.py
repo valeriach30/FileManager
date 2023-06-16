@@ -6,7 +6,6 @@ import secrets
 import complementos
 import json
 
-
 client = MongoClient('mongodb+srv://Kdaniel06:Dani060401$@cluster0.t10iglg.mongodb.net/?retryWrites=true&w=majority')
 db = client['Users']
 collection = db['User']
@@ -197,6 +196,7 @@ def rutaAnterior():
 
 @app.route('/crearArchivo')
 def crearArchivo():
+    
     nombreArchivo = request.args.get('nombre')
     contenido = request.args.get('contenido')
     extension = request.args.get('extension')
@@ -544,4 +544,4 @@ def obtenerCarpetas(data):
 
 # ---------------------- MAIN ----------------------
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
