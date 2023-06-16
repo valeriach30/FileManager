@@ -235,7 +235,40 @@ function eliminarArchivo(){
     var url = '/eliminarArchivo?' + params.toString();
     window.location.href = url;
 }
+// --------------------------- ARCHIVO REPETIDO ---------------------------
 
+function copiarArchivoF(){
+    
+    // Obtener datos
+    var emailElement = document.getElementById("email");
+    var emailValue = emailElement.innerHTML;
+
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");
+
+    var contenido = document.getElementById("contenido2");
+    contenido = contenido.getAttribute("data-value");
+    var nombre = document.getElementById("nombreArchivo");
+    nombre = nombre.getAttribute("data-value");
+    var extension = document.getElementById("extension").value;
+    
+    var selectElement = document.getElementById("carpetaSelect");
+    var selectedValue = selectElement.value;
+
+
+    // Construir los parámetros de consulta
+    var params = new URLSearchParams();
+    params.append('email', emailValue);
+    params.append('name', userValue);
+    params.append('rutas', rutasArray);
+    params.append('nombre', nombre);
+    params.append('contenido', contenido);
+    params.append('extension', extension);
+    params.append('selectedValue', selectedValue);
+    
+    var url = '/copiarArchivo?' + params.toString();
+    window.location.href = url;
+};
 // --------------------------- ARCHIVO REPETIDO ---------------------------
 
 function sustituirArchivo(element){
