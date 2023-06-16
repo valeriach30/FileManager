@@ -268,7 +268,23 @@ function moverArchivoF(){
 
 // --------------------------- COMPARTIR CARPETA ---------------------------
 function compartirCarpetaF(){
+    // Obtener datos
+    var emailElement = document.getElementById("email");
+    var emailValue = emailElement.innerHTML;
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");
+    var rutasArray = obtenerRutas();
+    var nombreUsuario = document.getElementById("nombreShareCar").value;
 
+    // Construir los parámetros de consulta
+    var params = new URLSearchParams();
+    params.append('email', emailValue);
+    params.append('name', userValue);
+    params.append('rutas', rutasArray);
+    params.append('usuario', nombreUsuario);
+    
+    var url = '/compartirCarpeta?' + params.toString();
+    window.location.href = url;
 }
 
 // --------------------------- CLOSE FORM ---------------------------
@@ -285,6 +301,7 @@ function closeForm() {
     document.getElementById("formCargarCarpeta").style.display = "none";
     document.getElementById("formDescargarCarpeta").style.display = "none";
     document.getElementById("formCopiarCarpeta").style.display = "none";
+    document.getElementById("formCompartirCarpeta").style.display = "none";
 
 }
 

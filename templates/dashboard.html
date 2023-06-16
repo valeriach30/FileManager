@@ -28,6 +28,18 @@
     Ya no hay espacio disponible!
 </div>
 {% endif %}
+{% if errorCompartir %}
+<div class="alert">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    El usuario no existe, intente de nuevo
+</div>
+{% endif %}
+{% if compartirExito %}
+<div class="done">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    Carpeta compartida con exito!
+</div>
+{% endif %}
 <div class="container">
     <div class="view-account">
         <section class="module">
@@ -84,6 +96,7 @@
                                         <th class="name truncate">Name</th>
                                         <th class="date">Uploaded</th>
                                         <th class="size">Size</th>
+                                        <th class="user">User</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -93,6 +106,7 @@
                                         <td class="name truncate"><a class="button archivo" href="#popup1" id="{{loop.index}}" data-value="{{archivo}}">{{archivo.name}}</a></td>
                                         <td class="date">{{archivo.updated}}</td>
                                         <td class="size">{{archivo.size}}</td>
+                                        <td class="user">{{archivo.user}}</td>
                                     </tr>
                                     {% endfor%}
                                     {% for carpeta in folders%}
@@ -101,6 +115,7 @@
                                         <td class="name truncate"><a class="button carpeta" href="#" id="carp{{loop.index}}" data-value="{{carpeta}}">{{carpeta.name}}</a></td>
                                         <td class="date">{{carpeta.updated}}</td>
                                         <td class="size">--</td>
+                                        <td class="user">{{carpeta.user}}</td>
                                     </tr>
                                     {% endfor%}
                             </table>
@@ -404,9 +419,9 @@
                                   <h2>Compartir carpeta</h2>
                               
                                   <label for="nombre"><b>Nombre</b></label>
-                                  <input type="text" placeholder="Ingresar nombre del usuario" id="nombreShare" required>
+                                  <input type="text" placeholder="Ingresar nombre del usuario" id="nombreShareCar" required>
                               
-                                  <button type="submit" class="btn" onclick="compartirCarpetaF()">Crear</button>
+                                  <button type="submit" class="btn" onclick="compartirCarpetaF()">Compartir</button>
                                   <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
                                 </div>
                             </div>
