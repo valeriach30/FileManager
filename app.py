@@ -358,6 +358,61 @@ def sustituirArchivo():
                             archivos=archivos, rutas = rutas, error=False, storage=storage)
 
 
+# ---------------------- MOVER ARCHIVO ----------------------
+
+@app.route('/moverArchivo')
+def moverArchivo():
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    destino = request.args.get('selectedValue')
+    nombreArchivo = request.args.get('nombre')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    data = complementos.obtenerJson(userName)
+    
+    if(len(rutas) != 1):
+        error = complementos.moverArchivo(data, userName, rutas, destino, nombreArchivo)
+        archivos, folders = complementos.buscar_carpeta(data, rutas)
+    else:
+        folders, archivos = complementos.obtenerFileSystem(data)
+    
+    if(not error):
+        storage = complementos.determinarEspacio(userName)
+        return render_template('dashboard.html', email=email, name=userName, folders=folders,
+                                archivos=archivos, rutas = rutas, storage=storage)
+    
+    # Archivo repetido, determinar si se quiere sustituir
+    else:
+        storage = complementos.determinarEspacio(userName)
+        return render_template('dashboard.html', email=email, name=userName, folders=folders,
+                                archivos=archivos, rutas = rutas, storage=storage, 
+                                errorMoverArchivo=True, nombreArchivo=nombreArchivo,
+                                destino=destino)
+
+
+@app.route('/sustituirArchivoMover')
+def sustituirArchivoMover():
+    userName = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    destino = request.args.get('destino')
+    nombreArchivo = request.args.get('nombre')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    data = complementos.obtenerJson(userName)
+
+    if(len(rutas) != 1):
+        complementos.sustMoverArchivo(data, userName, rutas, destino, nombreArchivo)
+        archivos, folders = complementos.buscar_carpeta(data, rutas)
+    else:
+        folders, archivos = complementos.obtenerFileSystem(data)
+    
+    storage = complementos.determinarEspacio(userName)
+    return render_template('dashboard.html', email=email, name=userName, folders=folders,
+                            archivos=archivos, rutas = rutas, storage=storage)
+
+    
 # ---------------------- CREAR CARPETA ----------------------
 
 @app.route('/crearCarpeta')

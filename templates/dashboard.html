@@ -249,7 +249,7 @@
                                     <h2>Mover Archivo</h2>
                               
                                     <label for="nombre"><b>Escoger a donde mover este archivo</b></label>
-                                    <select name="language" id="language" style="padding: 15px;">
+                                    <select name="language" id="archivoSelect" style="padding: 15px;">
                                         {% if carpetasRutas %}
                                             {% for ruta in carpetasRutas%}
                                             <option value="{{ruta}}">{{ruta}}</option>
@@ -373,7 +373,27 @@
                                     <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
                                 </div>
                             </div>
-
+                            <!-- POP UP 15 ALERTA SUSTITUCION ARCHIVO-->
+                            {% if errorMoverArchivo %}
+                            <div class='dialog-ovelay fadeIn'>
+                                <div class='dialog zoomIn'>
+                                    <header>
+                                    <h3> Alerta! </h3>
+                                        <i class='fa fa-close'></i>
+                                    </header>
+                                    <div class='dialog-msg'>
+                                    <p id="nombreArchivo" data-value="{{nombreArchivo}}"> El archivo ya existe. Desea sustituirla? </p> 
+                                    <p id="destino" data-value="{{destino}}"></p>
+                                    </div>
+                                    <footer>
+                                    <div class='controls'>
+                                        <button class='button button-primary-flat' onclick="sustitucionArchivoMov(this)"> Ok </button> 
+                                        <button class='button button-default-flat cancelAction' onclick="cancelarCarpeta(this)"> Cancelar </button> 
+                                    </div>
+                                    </footer>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
