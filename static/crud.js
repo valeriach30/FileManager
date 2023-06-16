@@ -180,8 +180,7 @@ function cargarCarpetaF(){
 
             lector.onload = function(e) {
                 contenido = e.target.result;
-                console.log('Contenido del archivo:', contenido);
-                //var contenido = contenidoElement.value;
+                //console.log('Contenido del archivo:', contenido);
                 var nombre = archivo.name; 
                 nombre = nombre.split('.').slice(0, -1).join('.');
                 var extension = archivo.type;
@@ -210,11 +209,6 @@ function cargarCarpetaF(){
         // No se seleccionó ningún archivo
         console.log("No se seleccionó ningún archivo.");
     }
-  
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 // --------------------------- MOVER CARPETA ---------------------------
 function moverCarpetaF(){
@@ -291,8 +285,8 @@ function eliminarArchivo(){
     var url = '/eliminarArchivo?' + params.toString();
     window.location.href = url;
 }
-// --------------------------- ARCHIVO REPETIDO ---------------------------
-
+// --------------------------- COPIAR ARCHIVO ---------------------------
+/*hay que arreglarlo*/
 function copiarArchivoF(){
     
     // Obtener datos
@@ -311,12 +305,14 @@ function copiarArchivoF(){
     var selectElement = document.getElementById("carpetaSelect");
     var selectedValue = selectElement.value;
 
+    var rutasArray = obtenerRutas();
+    var ultimaRuta = rutasArray[rutasArray.length - 1];
 
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
     params.append('email', emailValue);
     params.append('name', userValue);
-    params.append('rutas', rutasArray);
+    params.append('rutas', selectedValue);
     params.append('nombre', nombre);
     params.append('contenido', contenido);
     params.append('extension', extension);
@@ -325,6 +321,21 @@ function copiarArchivoF(){
     var url = '/copiarArchivo?' + params.toString();
     window.location.href = url;
 };
+// --------------------------- DESCARGAR ARCHIVO ---------------------------
+function descargarArchivoF() {
+    var nombreArchivo = document.getElementById("nombre");
+    nombreArchivo = nombreArchivo.innerText;
+    var contenidoArchivo = document.getElementById("fileContent");
+    contenidoArchivo = contenidoArchivo.innerText;
+
+    console.log(contenidoArchivo,nombreArchivo);
+  
+    var enlace = document.getElementById("download-link");
+    enlace.href = "data:text/plain;charset=utf-8," + encodeURIComponent(contenidoArchivo);
+    enlace.download = nombreArchivo;
+    enlace.click();
+  }
+  
 // --------------------------- ARCHIVO REPETIDO ---------------------------
 
 function sustituirArchivo(element){
