@@ -65,6 +65,14 @@ def archivoRepetido(json_carpeta, nombre_archivo):
     return False
 
 
+# Funcion que determina si dentro de una carpeta ya esta un archivo
+def contenidoArchivo(json_carpeta, nombre_archivo):
+    files = json_carpeta["files"]
+    for archivo in files:
+        if archivo["name"] == nombre_archivo and archivo["type"] == "archivo":
+            return archivo
+    return False
+
 # ---------------------- EDITAR ARCHIVO ----------------------
 
 def editarArchivo(rutas, data, nombreArchivo, nuevoContenido, usuario):
@@ -368,6 +376,90 @@ def copiarCarpeta(data, usuario, rutas, destino):
             file.write(updated_json)
 
         return True, carpetaNueva
+
+# ---------------------- MOVER ARCHIVO ----------------------
+def moverArchivo(data, usuario, rutas, destino, nombreArchivo):
+    rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
+    rutas.pop(0)
+    
+    destino = destino.split("/")
+    
+    carpetaDestino = buscarContenido(data["files"], destino)
+    carpetaPasada = buscarContenido(data["files"], rutas)
+    contenido = contenidoArchivo(carpetaPasada, nombreArchivo)
+
+    # Determinar si hay un archivo con el mismo nombre
+    if(carpetaDestino is not None):
+        presente = archivoRepetido(carpetaDestino, nombreArchivo)
+    else:
+        presente = False
+    
+    if not presente:
+        # Eliminar el archivo de la direccion pasada
+        newFiles = eliminarContenido(data["files"], rutas, nombreArchivo, usuario)
+    
+        if(len(rutas) != 1):
+            for carpeta in data['files']:
+                if(carpeta['name'] == rutas[-2]):
+                    carpeta['files'] = newFiles
+
+        # Agrega el archivo al destino
+        carpetaDestino["files"].append(contenido)
+
+        # Convierte el objeto Python de vuelta a JSON
+        updated_json = json.dumps(data)
+
+        # Actualiza el archivo local con el nuevo JSON
+        nombreArchivo = usuario + '.json'
+        with open(nombreArchivo, "w") as file:
+            file.write(updated_json)
+        return False, None
+    else:
+        # Convierte el objeto Python de vuelta a JSON
+        updated_json = json.dumps(data)
+
+        # Actualiza el archivo local con el nuevo JSON
+        nombreArchivo = usuario + '.json'
+        with open(nombreArchivo, "w") as file:
+            file.write(updated_json)
+
+        return True
+    
+
+def sustMoverArchivo(data, usuario, rutas, destino, nombreArchivo):
+    rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
+    rutas.pop(0)
+    
+    destino = destino.split("/")
+    print(rutas)
+    print(destino)
+    
+    carpetaDestino = buscarContenido(data["files"], destino)
+    carpetaPasada = buscarContenido(data["files"], rutas)
+    contenido = contenidoArchivo(carpetaPasada, nombreArchivo)
+
+    # Eliminar el archivo de la direccion pasada y del destino
+    newFiles = eliminarContenido(data["files"], rutas, nombreArchivo, usuario)
+    newFiles = eliminarContenido(data["files"], destino, nombreArchivo, usuario)
+
+    if(len(rutas) != 1):
+        for carpeta in data['files']:
+            if(carpeta['name'] == rutas[-2]):
+                carpeta['files'] = newFiles
+
+    # Agrega el archivo al destino
+    carpetaDestino["files"].append(contenido)
+
+    # Convierte el objeto Python de vuelta a JSON
+    updated_json = json.dumps(data)
+
+    # Actualiza el archivo local con el nuevo JSON
+    nombreArchivo = usuario + '.json'
+    with open(nombreArchivo, "w") as file:
+        file.write(updated_json)
+    return False, None
+
+
 
 # ---------------------- MOVER CARPETA ----------------------
 def moverCarpeta(data, usuario, rutas, destino):

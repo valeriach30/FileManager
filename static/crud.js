@@ -218,29 +218,49 @@ function sleep(ms) {
 }
 // --------------------------- MOVER CARPETA ---------------------------
 function moverCarpetaF(){
-     // Obtener datos
-     var emailElement = document.getElementById("email");
-     var emailValue = emailElement.innerHTML;
-     var userElement = document.getElementById("name");
-     var userValue = userElement.getAttribute("data-value");
-     var rutasArray = obtenerRutas();
-     var selectElement = document.getElementById("carpetaSelect");
-     var selectedValue = selectElement.value;
- 
-     // Construir los parámetros de consulta
-     var params = new URLSearchParams();
-     params.append('email', emailValue);
-     params.append('name', userValue);
-     params.append('rutas', rutasArray);
-     params.append('selectedValue', selectedValue);
-     
-     var url = '/moverCarpeta?' + params.toString();
-     window.location.href = url;
+    // Obtener datos
+    var emailElement = document.getElementById("email");
+    var emailValue = emailElement.innerHTML;
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");
+    var rutasArray = obtenerRutas();
+    var selectElement = document.getElementById("carpetaSelect");
+    var selectedValue = selectElement.value;
+
+    // Construir los parámetros de consulta
+    var params = new URLSearchParams();
+    params.append('email', emailValue);
+    params.append('name', userValue);
+    params.append('rutas', rutasArray);
+    params.append('selectedValue', selectedValue);
+    
+    var url = '/moverCarpeta?' + params.toString();
+    window.location.href = url;
 }
 
 // --------------------------- MOVER ARCHIVO ---------------------------
 function moverArchivoF(){
-    alert("MOVER ARCHIVO")
+    // Obtener datos
+    var emailElement = document.getElementById("email");
+    var emailValue = emailElement.innerHTML;
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");
+    var rutasArray = obtenerRutas();
+    var selectElement = document.getElementById("archivoSelect");
+    var selectedValue = selectElement.value;
+    var nombre = document.getElementById("nombre");
+    nombre = nombre.innerText;
+
+    // Construir los parámetros de consulta
+    var params = new URLSearchParams();
+    params.append('email', emailValue);
+    params.append('name', userValue);
+    params.append('rutas', rutasArray);
+    params.append('selectedValue', selectedValue);
+    params.append('nombre', nombre);
+    
+    var url = '/moverArchivo?' + params.toString();
+    window.location.href = url;
 }
 
 // --------------------------- CLOSE FORM ---------------------------
@@ -415,6 +435,35 @@ function sustitucionMovimiento(element){
     params.append('rutas', rutasArray);
     
     var url = '/sustituirMover?' + params.toString();
+    window.location.href = url;
+}
+
+function sustitucionArchivoMov(element){
+    
+    quitarPopUp(element);
+    
+    // Obtener datos
+    var emailElement = document.getElementById("email");
+    var emailValue = emailElement.innerHTML;
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");
+    var nombreArchivo = document.getElementById("nombreArchivo");
+    var nombreArchivoValue = nombreArchivo.getAttribute("data-value");
+    
+    var rutasElement = document.getElementById("destino");
+    var destino = rutasElement.getAttribute("data-value");
+    var rutasArray = obtenerRutas();
+    
+
+    // Construir los parámetros de consulta
+    var params = new URLSearchParams();
+    params.append('email', emailValue);
+    params.append('name', userValue);
+    params.append('destino', destino);
+    params.append('rutas', rutasArray);
+    params.append('nombre', nombreArchivoValue);
+    
+    var url = '/sustituirArchivoMover?' + params.toString();
     window.location.href = url;
 }
 
