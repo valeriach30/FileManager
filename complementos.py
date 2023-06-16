@@ -65,7 +65,7 @@ def archivoRepetido(json_carpeta, nombre_archivo):
     return False
 
 
-# Funcion que determina si dentro de una carpeta ya esta un archivo
+# Funcion que retorna el json de un archivo
 def contenidoArchivo(json_carpeta, nombre_archivo):
     files = json_carpeta["files"]
     for archivo in files:
@@ -582,6 +582,31 @@ def compartirCarpeta(rutas, data, usuarioReceptor):
             # Adjuntar la carpeta compartida al receptor
             carpeta["files"].append(carpetaCompartida)
     
+    # Escribir el archivo del receptor
+    updated_json = json.dumps(dataReceptor)
+
+    # Actualiza el archivo local con el nuevo JSON
+    nombreArchivo = usuarioReceptor + '.json'
+    with open(nombreArchivo, "w") as file:
+        file.write(updated_json)
+
+
+# ---------------------- COMPARTIR ARCHIVO ----------------------
+def compartirArchivo(rutas, data, usuarioReceptor, nombreArchivo):
+    rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
+    rutas.pop(0)
+    
+    # Obtener el archivo del emisor
+    carpetaEmisor = buscarContenido(data["files"], rutas)
+    archivoCompartido = contenidoArchivo(carpetaEmisor, nombreArchivo)
+
+    # Obtener la carpeta shared del receptor
+    dataReceptor = obtenerJson(usuarioReceptor)
+    for carpeta in dataReceptor["files"]:
+        if(carpeta["name"] == "Shared"):
+            # Adjuntar el archivo al receptor
+            carpeta["files"].append(archivoCompartido)
+
     # Escribir el archivo del receptor
     updated_json = json.dumps(dataReceptor)
 

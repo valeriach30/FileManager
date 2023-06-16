@@ -20,6 +20,9 @@ function moverArchivo() {
 function compartirCarpeta() {
     document.getElementById("formCompartirCarpeta").style.display = "block";
 }
+function compartirArchivo() {
+    document.getElementById("formCompartirArchivo").style.display = "block";
+}
 /*Funciones de copiado*/
 function cargarArchivo() {
     document.getElementById("formCargarArchivo").style.display = "block";
@@ -302,6 +305,7 @@ function closeForm() {
     document.getElementById("formDescargarCarpeta").style.display = "none";
     document.getElementById("formCopiarCarpeta").style.display = "none";
     document.getElementById("formCompartirCarpeta").style.display = "none";
+    document.getElementById("formCompartirArchivo").style.display = "none";
 
 }
 
@@ -407,6 +411,31 @@ function sustituirArchivo(element){
 function cancelarArchivo(element){
     quitarPopUp(element);
 };
+
+// --------------------------- COMPARTIR ARCHIVO ---------------------------
+
+function compartirArchivoF(){
+    var emailElement = document.getElementById("email");
+    var emailValue = emailElement.innerHTML;
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");
+    var rutasArray = obtenerRutas();
+    var ultimaRuta = rutasArray[rutasArray.length - 1];
+    var nombre = document.getElementById("nombre");
+    nombre = nombre.innerText;
+    var nombreUsuario = document.getElementById("nombreShareAr").value;
+
+    // Construir los parámetros de consulta
+    var params = new URLSearchParams();
+    params.append('email', emailValue);
+    params.append('name', userValue);
+    params.append('rutas', rutasArray);
+    params.append('nombreArchivo', nombre);
+    params.append('nombreUsuario', nombreUsuario);
+    
+    var url = '/compartirArchivo?' + params.toString();
+    window.location.href = url;
+}
 
 // --------------------------- CARPETA REPETIDA ---------------------------
 
