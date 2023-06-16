@@ -140,7 +140,7 @@
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Descargar" onclick="descargarArchivo()" ><i class="fa fa-cloud-download"></i></button>
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Copiar" onclick="copiarArchivo()"><i class="fa fa-files-o"></i></button> 
                                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Move" onclick="moverArchivo()"><i class="fa fa-arrows"></i></button> 
-                                        <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Share"><i class="fa fa-share-alt-square"></i></button> 
+                                        <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Share" onclick="compartirArchivo()"><i class="fa fa-share-alt-square"></i></button> 
                                         <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Delete" onclick="eliminarArchivo()"><i class="fa fa-trash-o"></i></button>
 
                                     </div>
@@ -397,7 +397,7 @@
                                         <i class='fa fa-close'></i>
                                     </header>
                                     <div class='dialog-msg'>
-                                    <p id="nombreArchivo" data-value="{{nombreArchivo}}"> El archivo ya existe. Desea sustituirla? </p> 
+                                    <p id="nombreArchivo" data-value="{{nombreArchivo}}"> El archivo ya existe. Desea sustituirlo? </p> 
                                     <p id="destino" data-value="{{destino}}"></p>
                                     </div>
                                     <footer>
@@ -418,6 +418,18 @@
                                   <input type="text" placeholder="Ingresar nombre del usuario" id="nombreShareCar" required>
                               
                                   <button type="submit" class="btn" onclick="compartirCarpetaF()">Compartir</button>
+                                  <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
+                                </div>
+                            </div>
+                            <!--POP UP 17 COMPARTIR ARCHIVO-->
+                            <div class="form-popup" id="formCompartirArchivo">
+                                <div class="form-container">
+                                  <h2>Compartir archivo</h2>
+                              
+                                  <label for="nombre"><b>Nombre</b></label>
+                                  <input type="text" placeholder="Ingresar nombre del usuario" id="nombreShareAr" required>
+                              
+                                  <button type="submit" class="btn" onclick="compartirArchivoF()">Compartir</button>
                                   <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
                                 </div>
                             </div>
