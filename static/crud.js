@@ -17,6 +17,9 @@ function moverCarpeta() {
 function moverArchivo() {
     document.getElementById("formMoverArchivo").style.display = "block";
 }
+function compartirCarpeta() {
+    document.getElementById("formCompartirCarpeta").style.display = "block";
+}
 /*Funciones de copiado*/
 function cargarArchivo() {
     document.getElementById("formCargarArchivo").style.display = "block";
@@ -261,6 +264,11 @@ function moverArchivoF(){
     
     var url = '/moverArchivo?' + params.toString();
     window.location.href = url;
+}
+
+// --------------------------- COMPARTIR CARPETA ---------------------------
+function compartirCarpetaF(){
+
 }
 
 // --------------------------- CLOSE FORM ---------------------------
