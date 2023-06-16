@@ -139,6 +139,27 @@ function enviarEliminar(){
     window.location.href = url;
 }
 
+// --------------------------- COPIAR CARPETA ---------------------------
+function copiarCarpetaF(){
+    // Obtener datos
+    var emailElement = document.getElementById("email");  
+    var emailValue = emailElement.innerHTML;
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");
+    var rutasArray = obtenerRutas();
+    var selectElement = document.getElementById("carpetaSelect");
+    var selectedValue = selectElement.value;
+
+    // Construir los parámetros de consulta
+    var params = new URLSearchParams();
+    params.append('email', emailValue);
+    params.append('name', userValue);
+    params.append('rutas', rutasArray);
+    params.append('selectedValue', selectedValue);
+    
+    var url = '/copiarCarpeta?' + params.toString();
+    window.location.href = url;
+}
 // --------------------------- MOVER CARPETA ---------------------------
 function moverCarpetaF(){
      // Obtener datos
@@ -188,6 +209,7 @@ function obtenerRutas(){
     var rutasValue = rutasElement.getAttribute("data-value");
     rutasValue = rutasValue.replace(/[\[\]']+/g, '');
     var rutasArray = rutasValue.split(",");
+    console.log("XD\n");
     return rutasArray
 }
 

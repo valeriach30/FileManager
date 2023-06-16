@@ -371,9 +371,28 @@ def copiarCarpeta():
     userName = request.args.get('name')
     email = request.args.get('email')
     rutas = request.args.get('rutas')
+    destino = request.args.get('selectedValue')
     rutas = [ruta.strip() for ruta in rutas.split(',')]
     rutas = [ruta.replace('/', ' /') for ruta in rutas]
     data = complementos.obtenerJson(userName)
+
+    if(len(rutas) != 1):
+        error, carpetaNueva = complementos.copiarCarpeta(data, userName, rutas, destino)
+        archivos, folders = complementos.buscar_carpeta(data, rutas)
+    else:
+        folders, archivos = complementos.obtenerFileSystem(data)
+    
+    if(not error):
+        storage = complementos.determinarEspacio(userName)
+        return render_template('dashboard.html', email=email, name=userName, folders=folders,
+                                archivos=archivos, rutas = rutas, storage=storage)
+    
+    # Carpeta repetida, determinar si se quiere sustituir
+    else:
+        storage = complementos.determinarEspacio(userName)
+        return render_template('dashboard.html', email=email, name=userName, folders=folders,
+                                archivos=archivos, rutas = rutas, storage=storage, 
+                                errorMovimiento= True, destino=destino)
 #CARGAR
 @app.route('/cargarCarpeta')
 def cargarCarpeta():

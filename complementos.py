@@ -327,6 +327,48 @@ def buscar_carpeta(json_data, ruta_carpeta):
     buscar_recursivo(json_data, ruta_carpeta)
     return archivos_encontrados, carpetas_encontradas
 
+# ---------------------- COPIAR CARPETA ----------------------
+def copiarCarpeta(data, usuario, rutas, destino):
+    rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
+    rutas.pop(0)
+    
+    destino = destino.split("/")
+    carpetaNueva = buscarContenido(data["files"], rutas)
+    
+    carpetaDestino = buscarContenido(data["files"], destino)
+    
+    # Agregar la carpeta en el destino
+    
+    # Determinar si hay una carpeta con el mismo nombre 
+    if(carpetaDestino is not None):
+        presente = carpetaRepetida(carpetaDestino, carpetaNueva["name"])
+    else:
+        presente = False
+    
+    if not presente:
+        
+        # Agrega la carpeta al destino
+        carpetaDestino["files"].append(carpetaNueva)
+
+        # Convierte el objeto Python de vuelta a JSON
+        updated_json = json.dumps(data)
+
+        # Actualiza el archivo local con el nuevo JSON
+        nombreArchivo = usuario + '.json'
+        with open(nombreArchivo, "w") as file:
+            file.write(updated_json)
+        return False, None
+    else:
+        # Convierte el objeto Python de vuelta a JSON
+        updated_json = json.dumps(data)
+
+        # Actualiza el archivo local con el nuevo JSON
+        nombreArchivo = usuario + '.json'
+        with open(nombreArchivo, "w") as file:
+            file.write(updated_json)
+
+        return True, carpetaNueva
+
 # ---------------------- MOVER CARPETA ----------------------
 def moverCarpeta(data, usuario, rutas, destino):
     rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]

@@ -341,7 +341,7 @@
                                     <h2>Cargar Carpeta</h2>
                               
                                     <label for="nombre"><b>Escoger a donde copiar este archivo</b></label>
-                                    <select name="language" id="language" style="padding: 15px;">
+                                    <select name="language" id="carpetaSelect" style="padding: 15px;">
                                         {% if carpetasRutas %}
                                             {% for ruta in carpetasRutas%}
                                             <option value="{{ruta}}">{{ruta}}</option>
@@ -367,7 +367,7 @@
                                         {% endif %}
                                     </select>
                                     <p id="carpetasRutas" data-value="{{carpetasRutas}}"></p>
-                                    <button type="submit" class="btn" onclick="moverArchivoF()">Mover</button>
+                                    <button type="submit" class="btn" onclick="moverArchivoF()">Copiar</button>
                                     <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
                                 </div>
                             </div>
@@ -377,7 +377,7 @@
                                     <h2>Copiar Carpeta</h2>
                               
                                     <label for="nombre"><b>Escoger a donde copiar este archivo</b></label>
-                                    <select name="language" id="language" style="padding: 15px;">
+                                    <select name="language" id="carpetaSelect" style="padding: 15px;">
                                         {% if carpetasRutas %}
                                             {% for ruta in carpetasRutas%}
                                             <option value="{{ruta}}">{{ruta}}</option>
@@ -385,7 +385,7 @@
                                         {% endif %}
                                     </select>
                                     <p id="carpetasRutas" data-value="{{carpetasRutas}}"></p>
-                                    <button type="submit" class="btn" onclick="moverArchivoF()">Mover</button>
+                                    <button type="submit" class="btn" onclick="copiarCarpetaF()">Copiar</button>
                                     <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
                                 </div>
                             </div>
