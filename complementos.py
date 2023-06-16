@@ -567,6 +567,29 @@ def obtenerCarpetas(data, ruta_actual="", rutas_carpetas=[]):
     return rutas_carpetas
 
 
+# ---------------------- COMPARTIR CARPETA ----------------------
+def compartirCarpeta(rutas, data, usuarioReceptor):
+    rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
+    rutas.pop(0)
+
+    # Obtener la carpeta del usuario emisor con las rutas
+    carpetaCompartida = buscarContenido(data["files"], rutas)
+    
+    # Obtener la carpeta shared del receptor
+    dataReceptor = obtenerJson(usuarioReceptor)
+    for carpeta in dataReceptor["files"]:
+        if(carpeta["name"] == "Shared"):
+            # Adjuntar la carpeta compartida al receptor
+            carpeta["files"].append(carpetaCompartida)
+    
+    # Escribir el archivo del receptor
+    updated_json = json.dumps(dataReceptor)
+
+    # Actualiza el archivo local con el nuevo JSON
+    nombreArchivo = usuarioReceptor + '.json'
+    with open(nombreArchivo, "w") as file:
+        file.write(updated_json)
+
 # ---------------------- FUNCIONES STORAGE ----------------------
 
 def determinarEspacio(usuario):

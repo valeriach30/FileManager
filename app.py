@@ -590,6 +590,41 @@ def sustituirMover():
     return render_template('dashboard.html', email=email, name=userName, folders=folders,
                             archivos=archivos, rutas = rutas, storage=storage)
 
+
+# ---------------------- COMPARTIR CARPETA ----------------------
+
+@app.route('/compartirCarpeta')
+def compartirCarpeta():
+    # Obtener datos
+    usuarioEmisor = request.args.get('name')
+    email = request.args.get('email')
+    rutas = request.args.get('rutas')
+    nombreReceptor = request.args.get('usuario')
+    rutas = [ruta.strip() for ruta in rutas.split(',')]
+    rutas = [ruta.replace('/', ' /') for ruta in rutas]
+    data = complementos.obtenerJson(usuarioEmisor)
+
+    # Determinar si existe el usuario
+    usuarioReceptor = collection.find_one({'name': nombreReceptor})
+
+    if(len(rutas) != 1):
+        archivos, folders = complementos.buscar_carpeta(data, rutas)
+    else:
+        folders, archivos = complementos.obtenerFileSystem(data)
+
+    # Existe
+    if(usuarioReceptor):
+        # Compartir con el usuario la carpeta
+        complementos.compartirCarpeta(rutas, data, nombreReceptor)
+        storage = complementos.determinarEspacio(usuarioEmisor)
+        return render_template('dashboard.html', email=email, name=usuarioEmisor, folders=folders,
+                            archivos=archivos, rutas = rutas, storage=storage, compartirExito=True)
+    else:
+        storage = complementos.determinarEspacio(usuarioEmisor)
+        return render_template('dashboard.html', email=email, name=usuarioEmisor, folders=folders,
+                            archivos=archivos, rutas = rutas, storage=storage, errorCompartir=True)
+        
+
 # ---------------------- OBTENER CARPETAS ----------------------
 def obtenerCarpetas(data):
     carpetas = []
