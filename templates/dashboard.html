@@ -65,7 +65,7 @@
                                 <button id="addButton" type="button" class="btn btn-default " data-toggle="tooltip" data-placement="bottom" title="Add" onclick="agregarArchivo()"><i class="fa fa-plus"></i></button>
                                 <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Archive" onclick="agregarCarpeta()"><i class="fa fa-archive"></i></button>
                                 <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Delete" onclick="eliminarCarpeta()"><i class="fa fa-trash-o"></i></button>
-                                <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Share"><i class="fa fa-share-alt-square"></i></button> 
+                                <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Share" onclick="compartirCarpeta()"><i class="fa fa-share-alt-square"></i></button> 
                                 <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Move" onclick="moverCarpeta()"><i class="fa fa-arrows"></i></button> 
                                 <!--Botones para copiar carpetas-->
                                 <button id = "buttonCargar" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Move" onclick="cargarCarpeta()"><i class="fa fa-desktop"></i></input>
@@ -394,6 +394,18 @@
                                 </div>
                             </div>
                             {% endif %}
+                            <!--POP UP 16 COMPARTIR CARPETA-->
+                            <div class="form-popup" id="formCompartirCarpeta">
+                                <div class="form-container">
+                                  <h2>Compartir carpeta</h2>
+                              
+                                  <label for="nombre"><b>Nombre</b></label>
+                                  <input type="text" placeholder="Ingresar nombre del usuario" id="nombreShare" required>
+                              
+                                  <button type="submit" class="btn" onclick="compartirCarpetaF()">Crear</button>
+                                  <button type="button" class="btn cancel" onclick="closeForm()">Cerrar</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

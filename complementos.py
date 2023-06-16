@@ -383,7 +383,6 @@ def moverArchivo(data, usuario, rutas, destino, nombreArchivo):
     rutas.pop(0)
     
     destino = destino.split("/")
-    
     carpetaDestino = buscarContenido(data["files"], destino)
     carpetaPasada = buscarContenido(data["files"], rutas)
     contenido = contenidoArchivo(carpetaPasada, nombreArchivo)
@@ -391,40 +390,38 @@ def moverArchivo(data, usuario, rutas, destino, nombreArchivo):
     # Determinar si hay un archivo con el mismo nombre
     if(carpetaDestino is not None):
         presente = archivoRepetido(carpetaDestino, nombreArchivo)
-    else:
-        presente = False
     
-    if not presente:
-        # Eliminar el archivo de la direccion pasada
-        newFiles = eliminarContenido(data["files"], rutas, nombreArchivo, usuario)
-    
-        if(len(rutas) != 1):
-            for carpeta in data['files']:
-                if(carpeta['name'] == rutas[-2]):
-                    carpeta['files'] = newFiles
+        if not presente:
+            # Eliminar el archivo de la direccion pasada
+            newFiles = eliminarContenido(data["files"], rutas, nombreArchivo, usuario)
+        
+            if(len(rutas) != 1):
+                for carpeta in data['files']:
+                    if(carpeta['name'] == rutas[-2]):
+                        carpeta['files'] = newFiles
 
-        # Agrega el archivo al destino
-        carpetaDestino["files"].append(contenido)
+            # Agrega el archivo al destino
+            carpetaDestino["files"].append(contenido)
 
-        # Convierte el objeto Python de vuelta a JSON
-        updated_json = json.dumps(data)
+            # Convierte el objeto Python de vuelta a JSON
+            updated_json = json.dumps(data)
 
-        # Actualiza el archivo local con el nuevo JSON
-        nombreArchivo = usuario + '.json'
-        with open(nombreArchivo, "w") as file:
-            file.write(updated_json)
-        return False, None
-    else:
-        # Convierte el objeto Python de vuelta a JSON
-        updated_json = json.dumps(data)
+            # Actualiza el archivo local con el nuevo JSON
+            nombreArchivo = usuario + '.json'
+            with open(nombreArchivo, "w") as file:
+                file.write(updated_json)
+            return False
+        else:
+            # Convierte el objeto Python de vuelta a JSON
+            updated_json = json.dumps(data)
 
-        # Actualiza el archivo local con el nuevo JSON
-        nombreArchivo = usuario + '.json'
-        with open(nombreArchivo, "w") as file:
-            file.write(updated_json)
+            # Actualiza el archivo local con el nuevo JSON
+            nombreArchivo = usuario + '.json'
+            with open(nombreArchivo, "w") as file:
+                file.write(updated_json)
 
-        return True
-    
+            return True
+        
 
 def sustMoverArchivo(data, usuario, rutas, destino, nombreArchivo):
     rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
