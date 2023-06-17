@@ -5,6 +5,7 @@ from flask_session import Session
 import secrets
 import complementos
 import json
+from datetime import date
 
 client = MongoClient('mongodb+srv://Kdaniel06:Dani060401$@cluster0.t10iglg.mongodb.net/?retryWrites=true&w=majority')
 db = client['Users']
@@ -76,16 +77,32 @@ def crearUsuarioRoute():
     else:
         #Lo mete en la base de datos
         collection.insert_one(usuario)
-        #Crea el json para el usuario con el contenido del json template
-        rutaPlantilla = 'template.json'
-        archivoDestino = nombre + ".json"
-
-        #Archivo template.json
-        with open(rutaPlantilla, 'r') as archivo_original:
-            contenido_json = json.load(archivo_original)
-
+        #Crea el json para el usuario 
+        archivoDestino = nombre + ".json"       
+        fecha_actual = date.today()
+        fecha_actual = fecha_actual.strftime("%d/%m/%Y")
+        base = {
+            "files": [
+                {
+                    "name": "Shared",
+                    "type": "folder",
+                    "created_at": fecha_actual,
+                    "updated": fecha_actual,
+                    "user": nombre,
+                    "files": []
+                },
+                {
+                    "name": "Raiz",
+                    "type": "folder",
+                    "created_at": fecha_actual,
+                    "updated": fecha_actual,
+                    "user": nombre,
+                    "files": []
+                }
+            ]
+        }
         with open(archivoDestino, 'w') as archivoDestino:
-            json.dump(contenido_json, archivoDestino)
+            json.dump(base, archivoDestino)
 
 
 
@@ -452,6 +469,7 @@ def sustituirArchivoMover():
 def crearCarpeta():
     nombreCarpeta = request.args.get('nombre')
     userName = request.args.get('name')
+    print(userName)
     email = request.args.get('email')
     rutas = request.args.get('rutas')
     carpetasRutas = request.args.get('dropdown')

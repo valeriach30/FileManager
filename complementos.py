@@ -86,7 +86,7 @@ def editarArchivo(rutas, data, nombreArchivo, nuevoContenido, usuario):
     # Editar archivo
     newFiles = cambiarContenido(data["files"], rutas, nombreArchivo, nuevoContenido, usuario)
 
-    if(cambiarContenido != False):
+    if(cambiarContenido):
         if(len(rutas) != 1):
             for carpeta in data['files']:
                 if(carpeta['name'] == rutas[-2]):
@@ -109,7 +109,7 @@ def cambiarContenido(files, ruta_carpeta, nombreArchivo, nuevoContenido, usuario
         return None
 
     nombre_carpeta = ruta_carpeta[0]
-
+    print(files)
     for file in files:
         if file["name"] == nombre_carpeta and file["type"] == "folder":
             if len(ruta_carpeta) == 1:
@@ -215,7 +215,7 @@ def nuevaCarpeta(nombreCarpeta, usuario, rutas, data):
             "type": "folder",
             "created_at": fecha_actual,
             "updated": fecha_actual,
-            "user": "valeria",
+            "user": usuario,
             "files": []
         }
         # Agrega el nuevo archivo a la carpeta encontrada

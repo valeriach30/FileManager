@@ -112,6 +112,7 @@ function enviarCarpeta(){
     var emailValue = emailElement.innerHTML;
     var userElement = document.getElementById("name");
     var userValue = userElement.getAttribute("data-value");
+    
     var nombre = document.getElementById("nombre2").value;
     
     var rutasArray = obtenerRutas();
