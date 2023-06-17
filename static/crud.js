@@ -176,7 +176,6 @@ function copiarCarpetaF(){
     params.append('dropdown', carpetasRutas);
 
     var url = '/copiarCarpeta?' + params.toString();
-    alert(url)
     window.location.href = url;
 }
 
