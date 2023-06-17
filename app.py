@@ -298,13 +298,14 @@ def copiarArchivo():
     rutas = [ruta.replace('/', ' /') for ruta in rutas]
     destino = request.args.get('selectedValue')
     data = complementos.obtenerJson(userName)
-
+    
     # Obtener dropdown
     carpetasRutas = complementos.obtenerDropdown(carpetasRutas, data)
-
     if(len(rutas) != 1):
         # Agregar el archivo al json
-        data = complementos.obtenerJson(userName)
+        destino = destino.split("/")
+        destino.insert(0, 'home')
+        nombreArchivo = nombreArchivo[:-4]
         complementos.nuevoArchivo(nombreArchivo, contenido, extension, userName, destino, data)
 
         archivos, folders = complementos.buscar_carpeta(data, rutas)
@@ -469,7 +470,6 @@ def sustituirArchivoMover():
 def crearCarpeta():
     nombreCarpeta = request.args.get('nombre')
     userName = request.args.get('name')
-    print(userName)
     email = request.args.get('email')
     rutas = request.args.get('rutas')
     carpetasRutas = request.args.get('dropdown')

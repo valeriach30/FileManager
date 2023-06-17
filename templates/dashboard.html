@@ -326,7 +326,7 @@
                                     <h2>Copiar Archivo</h2>
                               
                                     <label for="nombre"><b>Escoger a donde copiar este archivo</b></label>
-                                    <select name="language" id="carpetaSelect" style="padding: 15px;">
+                                    <select name="language" id="copiarArchivoSelect" style="padding: 15px;">
                                         {% if carpetasRutas %}
                                             {% for ruta in carpetasRutas%}
                                             <option value="{{ruta}}">{{ruta}}</option>
@@ -376,7 +376,7 @@
                                     <h2>Copiar Carpeta</h2>
                               
                                     <label for="nombre"><b>Escoger a donde copiar este archivo</b></label>
-                                    <select name="language" id="carpetaSelect" style="padding: 15px;">
+                                    <select name="language" id="carpetaSelectCopiar" style="padding: 15px;">
                                         {% if carpetasRutas %}
                                             {% for ruta in carpetasRutas%}
                                             <option value="{{ruta}}">{{ruta}}</option>

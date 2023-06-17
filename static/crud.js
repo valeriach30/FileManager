@@ -368,13 +368,13 @@ function copiarArchivoF(){
     var userElement = document.getElementById("name");
     var userValue = userElement.getAttribute("data-value");
 
-    var contenido = document.getElementById("contenido2");
-    contenido = contenido.getAttribute("data-value");
-    var nombre = document.getElementById("nombreArchivo");
-    nombre = nombre.getAttribute("data-value");
+    var contenido = document.getElementById("fileContent");
+    contenido = contenido.innerText;
+    var nombre = document.getElementById("nombre");
+    nombre = nombre.innerText;
     var extension = document.getElementById("extension").value;
     
-    var selectElement = document.getElementById("carpetaSelect");
+    var selectElement = document.getElementById("copiarArchivoSelect");
     var selectedValue = selectElement.value;
 
     var rutasArray = obtenerRutas();
@@ -385,7 +385,7 @@ function copiarArchivoF(){
     var params = new URLSearchParams();
     params.append('email', emailValue);
     params.append('name', userValue);
-    params.append('rutas', selectedValue);
+    params.append('rutas', rutasArray);
     params.append('nombre', nombre);
     params.append('contenido', contenido);
     params.append('extension', extension);

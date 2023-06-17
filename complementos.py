@@ -26,6 +26,7 @@ def nuevoArchivo(nombreArchivo, contenido, extension, usuario, rutas, data):
     
     # Determinar si hay espacio para el archivo
     actualizado = actualizarEspacio(usuario, sizeContenido)
+    
     if(actualizado):
         if carpeta is not None and not presente:
             size = str(sizeContenido) + ' KB'
@@ -109,7 +110,6 @@ def cambiarContenido(files, ruta_carpeta, nombreArchivo, nuevoContenido, usuario
         return None
 
     nombre_carpeta = ruta_carpeta[0]
-    print(files)
     for file in files:
         if file["name"] == nombre_carpeta and file["type"] == "folder":
             if len(ruta_carpeta) == 1:
@@ -561,7 +561,6 @@ def obtenerCarpetas(data, ruta_actual="", rutas_carpetas=[]):
                 nueva_ruta = f"{ruta_actual}/{nombre_carpeta}" if ruta_actual else nombre_carpeta
                 rutas_carpetas.append(nueva_ruta)
                 obtenerCarpetas(item, nueva_ruta, rutas_carpetas)
-    print(rutas_carpetas)
     return rutas_carpetas
 
 
