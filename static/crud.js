@@ -163,7 +163,7 @@ function copiarCarpetaF(){
     var userElement = document.getElementById("name");
     var userValue = userElement.getAttribute("data-value");
     var rutasArray = obtenerRutas();
-    var selectElement = document.getElementById("carpetaSelect");
+    var selectElement = document.getElementById("carpetaSelectCopiar");
     var selectedValue = selectElement.value;
     var carpetasRutas = dropdown();
 
@@ -176,6 +176,7 @@ function copiarCarpetaF(){
     params.append('dropdown', carpetasRutas);
 
     var url = '/copiarCarpeta?' + params.toString();
+    alert(url)
     window.location.href = url;
 }
 
