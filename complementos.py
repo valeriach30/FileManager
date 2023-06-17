@@ -428,8 +428,6 @@ def sustMoverArchivo(data, usuario, rutas, destino, nombreArchivo):
     rutas.pop(0)
     
     destino = destino.split("/")
-    print(rutas)
-    print(destino)
     
     carpetaDestino = buscarContenido(data["files"], destino)
     carpetaPasada = buscarContenido(data["files"], rutas)
@@ -558,12 +556,12 @@ def obtenerFileSystem(data):
 def obtenerCarpetas(data, ruta_actual="", rutas_carpetas=[]):
     if "files" in data:
         for item in data["files"]:
-            if item["type"] == "folder":
+            if item["type"] == "folder" and item["name"] != "Shared":
                 nombre_carpeta = item["name"]
                 nueva_ruta = f"{ruta_actual}/{nombre_carpeta}" if ruta_actual else nombre_carpeta
                 rutas_carpetas.append(nueva_ruta)
                 obtenerCarpetas(item, nueva_ruta, rutas_carpetas)
-    
+    print(rutas_carpetas)
     return rutas_carpetas
 
 
@@ -649,3 +647,10 @@ def restaurarEspacio(usuario, sizeArchivo):
     user['storage'] = espacio
     collection.update_one({"name": usuario}, {"$set": {"storage": espacio}})
     
+
+def obtenerDropdown(carpetasRutas, data):
+    if(carpetasRutas):
+        carpetasRutas = eval(carpetasRutas)
+    else:
+        carpetasRutas = obtenerCarpetas(data, "", [])
+    return carpetasRutas

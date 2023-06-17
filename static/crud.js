@@ -61,6 +61,8 @@ function enviarForm(){
     var rutasArray = obtenerRutas();
     var ultimaRuta = rutasArray[rutasArray.length - 1];
 
+    var carpetasRutas = dropdown();
+
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
     params.append('email', emailValue);
@@ -70,7 +72,8 @@ function enviarForm(){
     params.append('nombre', nombre);
     params.append('contenido', contenido);
     params.append('extension', extension);
-    
+    params.append('dropdown', carpetasRutas);
+
     var url = '/crearArchivo?' + params.toString();
     window.location.href = url;
 }
@@ -86,6 +89,7 @@ function updateArchivo(){
     var ultimaRuta = rutasArray[rutasArray.length - 1];
     var nombre = document.getElementById("nombre");
     nombre = nombre.innerText;
+    var carpetasRutas = dropdown();
 
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
@@ -95,6 +99,7 @@ function updateArchivo(){
     params.append('ruta', ultimaRuta);
     params.append('nuevoContenido', nuevoContenido);
     params.append('nombreArch', nombre);
+    params.append('dropdown', carpetasRutas);
 
     var url = '/editarArchivo?' + params.toString();
     window.location.href = url;
@@ -111,7 +116,8 @@ function enviarCarpeta(){
     
     var rutasArray = obtenerRutas();
     var ultimaRuta = rutasArray[rutasArray.length - 1];
-    
+    var carpetasRutas = dropdown();
+
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
     params.append('email', emailValue);
@@ -119,7 +125,8 @@ function enviarCarpeta(){
     params.append('rutas', rutasArray);
     params.append('ruta', ultimaRuta);
     params.append('nombre', nombre);
-    
+    params.append('dropdown', carpetasRutas);
+
     var url = '/crearCarpeta?' + params.toString();
     window.location.href = url;
 }
@@ -134,13 +141,15 @@ function enviarEliminar(){
     
     var rutasArray = obtenerRutas();
     var ultimaRuta = rutasArray[rutasArray.length - 1];
-    
+    var carpetasRutas = dropdown();
+
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
     params.append('email', emailValue);
     params.append('name', userValue);
     params.append('rutas', rutasArray);
-    
+    params.append('dropdown', carpetasRutas);
+
     var url = '/eliminarCarpeta?' + params.toString();
     window.location.href = url;
 }
@@ -155,6 +164,7 @@ function copiarCarpetaF(){
     var rutasArray = obtenerRutas();
     var selectElement = document.getElementById("carpetaSelect");
     var selectedValue = selectElement.value;
+    var carpetasRutas = dropdown();
 
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
@@ -162,7 +172,8 @@ function copiarCarpetaF(){
     params.append('name', userValue);
     params.append('rutas', rutasArray);
     params.append('selectedValue', selectedValue);
-    
+    params.append('dropdown', carpetasRutas);
+
     var url = '/copiarCarpeta?' + params.toString();
     window.location.href = url;
 }
@@ -175,6 +186,8 @@ function cargarCarpetaF(){
     var userElement = document.getElementById("name");
     var userValue = userElement.getAttribute("data-value");
     var fileElement = document.getElementById("archivo"); 
+    var carpetasRutas = dropdown();
+
     //pregunta si hay archivo
     if (fileElement) {
         var lector = new FileReader();
@@ -202,7 +215,8 @@ function cargarCarpetaF(){
                 params.append('nombre', nombre);
                 params.append('contenido', contenido);
                 params.append('extension', extension);
-                
+                params.append('dropdown', carpetasRutas);
+
                 var url = '/crearArchivo?' + params.toString();
                 window.location.href = url;  
             };
@@ -226,6 +240,7 @@ function moverCarpetaF(){
     var rutasArray = obtenerRutas();
     var selectElement = document.getElementById("carpetaSelect");
     var selectedValue = selectElement.value;
+    var carpetasRutas = dropdown();
 
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
@@ -233,7 +248,8 @@ function moverCarpetaF(){
     params.append('name', userValue);
     params.append('rutas', rutasArray);
     params.append('selectedValue', selectedValue);
-    
+    params.append('dropdown', carpetasRutas);
+
     var url = '/moverCarpeta?' + params.toString();
     window.location.href = url;
 }
@@ -250,6 +266,7 @@ function moverArchivoF(){
     var selectedValue = selectElement.value;
     var nombre = document.getElementById("nombre");
     nombre = nombre.innerText;
+    var carpetasRutas = dropdown();
 
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
@@ -258,7 +275,8 @@ function moverArchivoF(){
     params.append('rutas', rutasArray);
     params.append('selectedValue', selectedValue);
     params.append('nombre', nombre);
-    
+    params.append('dropdown', carpetasRutas);
+
     var url = '/moverArchivo?' + params.toString();
     window.location.href = url;
 }
@@ -272,6 +290,7 @@ function compartirCarpetaF(){
     var userValue = userElement.getAttribute("data-value");
     var rutasArray = obtenerRutas();
     var nombreUsuario = document.getElementById("nombreShareCar").value;
+    var carpetasRutas = dropdown();
 
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
@@ -279,7 +298,8 @@ function compartirCarpetaF(){
     params.append('name', userValue);
     params.append('rutas', rutasArray);
     params.append('usuario', nombreUsuario);
-    
+    params.append('dropdown', carpetasRutas);
+
     var url = '/compartirCarpeta?' + params.toString();
     window.location.href = url;
 }
@@ -323,6 +343,7 @@ function eliminarArchivo(){
     var rutasArray = obtenerRutas();
     var nombre = document.getElementById("nombre");
     nombre = nombre.innerText;
+    var carpetasRutas = dropdown();
 
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
@@ -330,7 +351,8 @@ function eliminarArchivo(){
     params.append('name', userValue);
     params.append('rutas', rutasArray);
     params.append('nombreAr', nombre);
-    
+    params.append('dropdown', carpetasRutas);
+
     var url = '/eliminarArchivo?' + params.toString();
     window.location.href = url;
 }
@@ -356,6 +378,7 @@ function copiarArchivoF(){
 
     var rutasArray = obtenerRutas();
     var ultimaRuta = rutasArray[rutasArray.length - 1];
+    var carpetasRutas = dropdown();
 
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
@@ -366,7 +389,8 @@ function copiarArchivoF(){
     params.append('contenido', contenido);
     params.append('extension', extension);
     params.append('selectedValue', selectedValue);
-    
+    params.append('dropdown', carpetasRutas);
+
     var url = '/copiarArchivo?' + params.toString();
     window.location.href = url;
 };
@@ -402,7 +426,7 @@ function sustituirArchivo(element){
     var nombre = document.getElementById("nombreArchivo");
     nombre = nombre.getAttribute("data-value");
     var extension = document.getElementById("extension").value;
-    
+    var carpetasRutas = dropdown();
     var rutasArray = obtenerRutas();
     var ultimaRuta = rutasArray[rutasArray.length - 1];
 
@@ -414,7 +438,8 @@ function sustituirArchivo(element){
     params.append('nombre', nombre);
     params.append('contenido', contenido);
     params.append('extension', extension);
-    
+    params.append('dropdown', carpetasRutas);
+
     var url = '/sustituirArchivo?' + params.toString();
     window.location.href = url;
 };
@@ -435,6 +460,7 @@ function compartirArchivoF(){
     var nombre = document.getElementById("nombre");
     nombre = nombre.innerText;
     var nombreUsuario = document.getElementById("nombreShareAr").value;
+    var carpetasRutas = dropdown();
 
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
@@ -443,7 +469,8 @@ function compartirArchivoF(){
     params.append('rutas', rutasArray);
     params.append('nombreArchivo', nombre);
     params.append('nombreUsuario', nombreUsuario);
-    
+    params.append('dropdown', carpetasRutas);
+
     var url = '/compartirArchivo?' + params.toString();
     window.location.href = url;
 }
@@ -463,14 +490,16 @@ function sustituirCarpeta(element){
     
     var rutasArray = obtenerRutas();
     var ultimaRuta = rutasArray[rutasArray.length - 1];
-    
+    var carpetasRutas = dropdown();
+
     // Construir los parámetros de consulta
     var params = new URLSearchParams();
     params.append('email', emailValue);
     params.append('name', userValue);
     params.append('rutas', rutasArray);
     params.append('nombre', nombre);
-    
+    params.append('dropdown', carpetasRutas);
+
     var url = '/sustituirCarpeta?' + params.toString();
     window.location.href = url;
 }
@@ -484,7 +513,7 @@ function sustitucionMovimiento(element){
     var emailValue = emailElement.innerHTML;
     var userElement = document.getElementById("name");
     var userValue = userElement.getAttribute("data-value");
-    
+    var carpetasRutas = dropdown();
     var rutasElement = document.getElementById("destino");
     var rutasValue = rutasElement.getAttribute("data-value");
     rutasValue = rutasValue.replace(/[\[\]']+/g, '');
@@ -498,7 +527,8 @@ function sustitucionMovimiento(element){
     params.append('name', userValue);
     params.append('destino', destino);
     params.append('rutas', rutasArray);
-    
+    params.append('dropdown', carpetasRutas);
+
     var url = '/sustituirMover?' + params.toString();
     window.location.href = url;
 }
@@ -514,7 +544,7 @@ function sustitucionArchivoMov(element){
     var userValue = userElement.getAttribute("data-value");
     var nombreArchivo = document.getElementById("nombreArchivo");
     var nombreArchivoValue = nombreArchivo.getAttribute("data-value");
-    
+    var carpetasRutas = dropdown();
     var rutasElement = document.getElementById("destino");
     var destino = rutasElement.getAttribute("data-value");
     var rutasArray = obtenerRutas();
@@ -527,14 +557,23 @@ function sustitucionArchivoMov(element){
     params.append('destino', destino);
     params.append('rutas', rutasArray);
     params.append('nombre', nombreArchivoValue);
+    params.append('dropdown', carpetasRutas);
     
     var url = '/sustituirArchivoMover?' + params.toString();
     window.location.href = url;
 }
 
+// Obtener carpetas  del dropdown
+function dropdown(){
+    var carpetasRutasElement = document.getElementById("carpetasRutas");
+    var carpetasRutasValue = carpetasRutasElement.getAttribute("data-value");
+    return carpetasRutasValue
+}
+
 function cancelarCarpeta(element){
     quitarPopUp(element);
 };
+
 function quitarPopUp(element){
     $(element).parents('.dialog-ovelay').find('.dialog').removeClass('zoomIn').addClass('zoomOut');
     $(element).parents('.dialog-ovelay').fadeOut(function () {
