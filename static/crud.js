@@ -486,7 +486,7 @@ function descargarCarpetaF2() {
     //var rutasSplit = rutas.split(',').map(ruta => ruta.trim());
     //rutasSplit = rutas.map(ruta => ruta.replace('/', ' /'));
     data = obtenerJson(userName);
-    console.log(data);
+    alert(data);
     var folderName = 'mi_carpeta'; // Nombre de la carpeta que deseas descargar
     zip.file(folderName + '/archivo2.txt', 'Contenido del archivo 2');
     recorrerArchivos(data.files, zip);
@@ -509,7 +509,7 @@ function descargarCarpetaF2() {
   }
   
 function recorrerArchivos(files, zip, ruta = '') {
-    console.log(files);
+    alert(files);
     files.forEach(function(file) {
       if (file.type !== 'folder') {
         var contenido = file.content;
@@ -567,7 +567,7 @@ function descargarCarpetaF() {
 
       var rutas = obtenerRutas();
       
-      console.log(data);
+      alert(data);
 
       var folderName = 'mi_carpeta'; // Nombre de la carpeta que deseas descargar
       zip.file(folderName + '/archivo2.txt', 'Contenido del archivo 2');
