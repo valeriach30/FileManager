@@ -245,7 +245,8 @@ def eliminar_carpeta(data, rutas, usuario):
     rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
     rutas.pop(0)
     
-    eliminar_directorio(data["files"], rutas)
+    respuesta, size = eliminar_directorio(data["files"], rutas)
+    restaurarEspacio(usuario, size)
     # Convierte el objeto Python de vuelta a JSON
     updated_json = json.dumps(data)
 
@@ -265,15 +266,41 @@ def eliminar_directorio(files, rutas_directorio):
         if file["name"] == ruta_directorio and file["type"] == "folder":
             if len(rutas_directorio) == 1:
                 # Obtener el tamaño de la carpeta
+                size = getSize(file)
                 files.remove(file)
-                return True
+                return True, size
             else:
                 return eliminar_directorio(file["files"], rutas_directorio[1:])
         elif file["type"] == "folder" and "files" in file:
             if eliminar_directorio(file["files"], rutas_directorio):
-                return True
+                return True, size
     return False
 
+def getSize(file):
+    if file["type"] != "folder":
+        raise ValueError("El JSON proporcionado no representa una carpeta")
+
+    tamanio_total = 0
+
+    # Recorrer los archivos de la carpeta
+    for archivo in file["files"]:
+        if archivo["type"] == "archivo":
+            # Obtener el tamaño del archivo y sumarlo al tamaño total
+            tamanio_archivo = sizeAux(archivo)
+            tamanio_total += tamanio_archivo
+        elif archivo["type"] == "folder":
+            # Obtener el tamaño de la subcarpeta de manera recursiva
+            tamanio_subcarpeta = getSize(archivo)
+            tamanio_total += tamanio_subcarpeta
+
+    return tamanio_total
+
+def sizeAux(archivo):
+    # Extraer el tamaño del archivo del JSON
+    size_str = archivo["size"]
+    size_parts = size_str.split(" ")
+    size = int(size_parts[0])
+    return size
 
 # ---------------------- BUSCAR CONTENIDO ----------------------
 
