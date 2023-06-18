@@ -388,9 +388,12 @@ function closeForm() {
 
 function obtenerRutas(){
     var rutasElement = document.getElementById("rutas");
+    
     var rutasValue = rutasElement.getAttribute("data-value");
+    
     rutasValue = rutasValue.replace(/[\[\]']+/g, '');
     var rutasArray = rutasValue.split(",");
+    //alert(rutasArray);
     console.log("XD\n");
     return rutasArray
 }
@@ -473,32 +476,94 @@ function descargarArchivoF() {
   }
 
 function descargarCarpetaF() {
-    var zip = new JSZip();
-  
-    // Agrega los archivos de la carpeta al archivo ZIP
-    agregarArchivo(zip, "carpeta/archivo1.txt", "Contenido del archivo 1.");
-    agregarArchivo(zip, "carpeta/archivo2.txt", "Contenido del archivo 2.");
-    agregarArchivo(zip, "carpeta/archivo/archivo.txt", "Contenido del archivo 2.");
+     var zip = new JSZip();
+
+    var userElement = document.getElementById("name");
+    var userName = userElement.getAttribute("data-value");
+    var rutas = obtenerRutas();
+
+    alert(userName);
+    //var rutasSplit = rutas.split(',').map(ruta => ruta.trim());
+    //rutasSplit = rutas.map(ruta => ruta.replace('/', ' /'));
+    data = obtenerJson(userName);
+    //console.log(data);
+    var folderName = 'mi_carpeta'; // Nombre de la carpeta que deseas descargar
+    zip.file(folderName + '/archivo2.txt', 'Contenido del archivo 2');
+    //recorrerArchivos(data.files, zip);
     // ...
   
     // Genera el archivo ZIP
-    zip.generateAsync({ type: "blob" })
-      .then(function (blob) {
-        // Crea un enlace para descargar el archivo ZIP
-        var enlace = document.createElement("a");
-        enlace.href = URL.createObjectURL(blob);
-        enlace.download = "carpeta.zip";
-  
-        // Hace clic en el enlace para iniciar la descarga
-        enlace.click();
+    zip.generateAsync({ type: 'blob' }).then(function(content) {
+        // Descargar archivo comprimido
+        var a = document.createElement('a');
+        var url = URL.createObjectURL(content);
+        a.href = url;
+        a.download = folderName + '.zip';
+        a.click();
+        URL.revokeObjectURL(url);
       });
   }
   
   function agregarArchivo(zip, rutaArchivo, contenidoArchivo) {
     zip.file(rutaArchivo, contenidoArchivo);
   }
+
+
+
+function recorrerArchivos(files, zip, ruta = '') {
+    files.forEach(function(file) {
+      if (file.type !== "folder") {
+        var contenido = file.content;
+        var nombreArchivo = ruta + file.name;
+        zip.file(nombreArchivo, contenido);
+      } else if (file.type === "folder" && file.files) {
+        var nuevaRuta = ruta + file.name + '/';
+        recorrerArchivos(file.files, zip, nuevaRuta);
+      }
+    });
+  }
+
+function buscarContenido(files, ruta_carpeta) {
+    if (ruta_carpeta.length === 0) {
+      return null;
+    }
   
+    var nombre_carpeta = ruta_carpeta[0];
   
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      if (file.name === nombre_carpeta && file.type === "folder") {
+        if (ruta_carpeta.length === 1) {
+          return file;
+        }
+        if ("files" in file) {
+          var carpeta_encontrada = buscarContenido(file.files, ruta_carpeta.slice(1));
+          if (carpeta_encontrada !== null) {
+            return carpeta_encontrada;
+          }
+        }
+      }
+    }
+  
+    return null;
+  }
+  
+
+// ---------------------- OBTENER JSON ----------------------
+function obtenerJson(userName) {
+    // Cargar el JSON
+    var nombreArchivo = userName + '.json';
+    alert(nombreArchivo);
+    fetch(nombreArchivo)
+        .then(response => response.json())
+        .then(data => {
+        // Haz algo con el contenido del archivo JSON
+        console.log(data);
+        })
+        .catch(error => {
+        console.error("Error al leer el archivo JSON:", error);
+        });
+    }
 // --------------------------- ARCHIVO REPETIDO ---------------------------
 
 function sustituirArchivo(element){
