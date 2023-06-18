@@ -264,6 +264,7 @@ def eliminar_directorio(files, rutas_directorio):
     for file in files:
         if file["name"] == ruta_directorio and file["type"] == "folder":
             if len(rutas_directorio) == 1:
+                # Obtener el tamaño de la carpeta
                 files.remove(file)
                 return True
             else:

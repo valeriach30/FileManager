@@ -1,5 +1,5 @@
 // --------------------------- ABRIR POP UPS ---------------------------
-function agregarArchivo() {
+function agregarArchivoNuevo() {
     document.getElementById("myForm").style.display = "block";
 }
 function agregarCarpeta() {
@@ -73,7 +73,7 @@ function enviarForm(){
     params.append('contenido', contenido);
     params.append('extension', extension);
     params.append('dropdown', carpetasRutas);
-
+    
     var url = '/crearArchivo?' + params.toString();
     window.location.href = url;
 }
