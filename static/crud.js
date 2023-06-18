@@ -231,6 +231,68 @@ function cargarCarpetaF(){
         console.log("No se seleccionó ningún archivo.");
     }
 }
+//prueba
+function selectFolder(e) {
+    for (var i = 0; i < e.target.files.length; i++) {
+       var s = e.target.files[i].name + '\n';
+       s += e.target.files[i].size + ' Bytes\n';
+       s += e.target.files[i].type;
+       alert(s);
+    }
+ }
+
+// --------------------------- CARGAR ARCHIVO ---------------------------
+function cargarArchivoF(){
+    //Obtener datos
+    var emailElement = document.getElementById("email");
+    var emailValue = emailElement.innerHTML;
+    var userElement = document.getElementById("name");
+    var userValue = userElement.getAttribute("data-value");
+    var fileElement = document.getElementById("archivo"); 
+    var carpetasRutas = dropdown();
+
+    //pregunta si hay archivo
+    if (fileElement) {
+        var lector = new FileReader();
+
+        const archivo = fileElement.files[0];
+
+        if (archivo) {
+            const lector = new FileReader();
+
+            lector.onload = function(e) {
+                contenido = e.target.result;
+                //console.log('Contenido del archivo:', contenido);
+                var nombre = archivo.name; 
+                nombre = nombre.split('.').slice(0, -1).join('.');
+                var extension = archivo.type;
+                var rutasArray = obtenerRutas();
+                var ultimaRuta = rutasArray[rutasArray.length - 1];
+
+                //Construir los parámetros de consulta
+                var params = new URLSearchParams();
+                params.append('email', emailValue);
+                params.append('name', userValue);
+                params.append('rutas', rutasArray);
+                params.append('ruta', ultimaRuta);
+                params.append('nombre', nombre);
+                params.append('contenido', contenido);
+                params.append('extension', extension);
+                params.append('dropdown', carpetasRutas);
+
+                var url = '/crearArchivo?' + params.toString();
+                window.location.href = url;  
+            };
+
+            lector.readAsText(archivo);
+  
+        }
+
+    } else {
+        // No se seleccionó ningún archivo
+        console.log("No se seleccionó ningún archivo.");
+    }
+}
 // --------------------------- MOVER CARPETA ---------------------------
 function moverCarpetaF(){
     // Obtener datos
@@ -409,6 +471,33 @@ function descargarArchivoF() {
     enlace.download = nombreArchivo;
     enlace.click();
   }
+
+function descargarCarpetaF() {
+    var zip = new JSZip();
+  
+    // Agrega los archivos de la carpeta al archivo ZIP
+    agregarArchivo(zip, "carpeta/archivo1.txt", "Contenido del archivo 1.");
+    agregarArchivo(zip, "carpeta/archivo2.txt", "Contenido del archivo 2.");
+    agregarArchivo(zip, "carpeta/archivo/archivo.txt", "Contenido del archivo 2.");
+    // ...
+  
+    // Genera el archivo ZIP
+    zip.generateAsync({ type: "blob" })
+      .then(function (blob) {
+        // Crea un enlace para descargar el archivo ZIP
+        var enlace = document.createElement("a");
+        enlace.href = URL.createObjectURL(blob);
+        enlace.download = "carpeta.zip";
+  
+        // Hace clic en el enlace para iniciar la descarga
+        enlace.click();
+      });
+  }
+  
+  function agregarArchivo(zip, rutaArchivo, contenidoArchivo) {
+    zip.file(rutaArchivo, contenidoArchivo);
+  }
+  
   
 // --------------------------- ARCHIVO REPETIDO ---------------------------
 
