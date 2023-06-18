@@ -478,8 +478,6 @@ def crearCarpeta():
     data = complementos.obtenerJson(userName)
 
     # Obtener dropdown
-    carpetasRutas = complementos.obtenerDropdown(carpetasRutas, data)
-
     if(len(rutas) != 1):
         # Agregar el archivo al json
         error = complementos.nuevaCarpeta(nombreCarpeta, userName, rutas, data)
@@ -487,6 +485,7 @@ def crearCarpeta():
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
     
+    carpetasRutas = complementos.obtenerCarpetas(data, "", [])
     storage = complementos.determinarEspacio(userName)
     return render_template('dashboard.html', email=email, name=userName, folders=folders, 
                            archivos=archivos, rutas = rutas, errorCarpeta=error, 
@@ -574,9 +573,6 @@ def eliminarCarpeta():
     rutas = [ruta.replace('/', ' /') for ruta in rutas]
     data = complementos.obtenerJson(userName)
 
-    # Obtener dropdown
-    carpetasRutas = complementos.obtenerDropdown(carpetasRutas, data)
-
     if(len(rutas) != 1):
         # Agregar el archivo al json
         complementos.eliminar_carpeta(data, rutas, userName)
@@ -585,6 +581,9 @@ def eliminarCarpeta():
         archivos, folders = complementos.buscar_carpeta(data, rutas)
     else:
         folders, archivos = complementos.obtenerFileSystem(data)
+    
+    # Obtener dropdown
+    carpetasRutas = complementos.obtenerCarpetas(data, "", [])
     
     storage = complementos.determinarEspacio(userName)
     return render_template('dashboard.html', email=email, name=userName, folders=folders, 
