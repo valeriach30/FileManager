@@ -239,7 +239,7 @@ function selectFolder(e) {
 
         // Obtener el nombre de la carpeta
         var folderPath = file.webkitRelativePath;
-        var folderName = folderPath.substring(0, folderPath.lastIndexOf('/'));
+        //var folderName = folderPath.substring(0, folderPath.lastIndexOf('/'));
 
         if (file.type === '') {
             // Es una carpeta
@@ -247,6 +247,7 @@ function selectFolder(e) {
         } else {
             // Es un archivo
             s += 'Archivo\n';
+            s += folderPath+'\n';
             s += file.size + ' Bytes\n';
             s += file.type;
         }
