@@ -364,6 +364,109 @@ function descargarArchivoF() {
     enlace.click();
   }
   
+<<<<<<< Updated upstream
+=======
+    // Genera el archivo ZIP
+    zip.generateAsync({ type: 'blob' }).then(function(content) {
+        // Descargar archivo comprimido
+        var a = document.createElement('a');
+        var url = URL.createObjectURL(content);
+        a.href = url;
+        a.download = folderName + '.zip';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+  }
+  
+  function agregarArchivo(zip, rutaArchivo, contenidoArchivo) {
+    zip.file(rutaArchivo, contenidoArchivo);
+  }
+  
+function recorrerArchivos(files, zip, ruta = '') {
+    files.forEach(function(file) {
+      if (file.type !== 'folder') {
+        var contenido = file.content;
+        var nombreArchivo = ruta + file.name;
+        zip.file(nombreArchivo, contenido);
+      } else if (file.type === 'folder' && file.files) {
+        var nuevaRuta = ruta + file.name + '/';
+        recorrerArchivos(file.files, zip, nuevaRuta);
+      }
+    });
+  }
+
+function buscarContenido(files, ruta_carpeta) {
+    if (ruta_carpeta.length === 0) {
+      return null;
+    }
+  
+    var nombre_carpeta = ruta_carpeta[0];
+  
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      if (file.name === nombre_carpeta && file.type === "folder") {
+        if (ruta_carpeta.length === 1) {
+          return file;
+        }
+        if ("files" in file) {
+          var carpeta_encontrada = buscarContenido(file.files, ruta_carpeta.slice(1));
+          if (carpeta_encontrada !== null) {
+            return carpeta_encontrada;
+          }
+        }
+      }
+    }
+  
+    return null;
+  }
+  
+
+// ---------------------- OBTENER JSON ----------------------
+function descargarCarpetaF() {
+    var userElement = document.getElementById("name");
+    var userName = userElement.getAttribute("data-value");
+    nombreArchivo = userName+".json";
+    var rutas = obtenerRutas();
+    var folderName = rutas[rutas.length - 1];
+    folderName = folderName.substring(4);
+    //alert(ultimaRuta);
+
+    fetch('/obtenerArchivo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ userName: userName , rutas: rutas})
+    })
+    .then(response => response.json())
+    .then(data => {
+      var zip = new JSZip();
+
+      // Nombre de la carpeta que deseas descargar
+      recorrerArchivos(data.files, zip);
+      // ...
+    
+      // Genera el archivo ZIP
+      zip.generateAsync({ type: 'blob' }).then(function(content) {
+          // Descargar archivo comprimido
+          var a = document.createElement('a');
+          var url = URL.createObjectURL(content);
+          a.href = url;
+          a.download = folderName + '.zip';
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+
+        console.log(data);
+        return data;
+    })
+    .catch(error => {
+      console.error('Error al obtener el archivo:', error);
+    });
+    return null;
+  }
+
+>>>>>>> Stashed changes
 // --------------------------- ARCHIVO REPETIDO ---------------------------
 
 function sustituirArchivo(element){
