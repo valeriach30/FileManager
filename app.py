@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 from pymongo import MongoClient
 from flask_socketio import SocketIO, send
 from flask_session import Session
@@ -463,7 +463,6 @@ def sustituirArchivoMover():
                             archivos=archivos, rutas = rutas, storage=storage, 
                             carpetasRutas=carpetasRutas)
 
-    
 # ---------------------- CREAR CARPETA ----------------------
 
 @app.route('/crearCarpeta')
@@ -548,6 +547,18 @@ def descargarCarpeta():
     rutas = [ruta.replace('/', ' /') for ruta in rutas]
     data = complementos.obtenerJson(userName)
 
+#Obtener archivo
+@app.route('/obtenerArchivo', methods=['POST'])
+def obtenerArchivo():
+    data = request.get_json()
+    nombre_archivo = data['nombreArchivo']
+    
+    # Leer el contenido del archivo
+    with open(nombre_archivo, 'r') as archivo:
+        contenido = archivo.read()
+    
+    # Devolver el contenido como respuesta JSON
+    return jsonify(contenido=contenido)
 # ---------------------- ELIMINAR CARPETA ----------------------
 
 @app.route('/eliminarCarpeta')
