@@ -538,7 +538,6 @@ function descargarCarpetaF() {
     .then(data => {
       var zip = new JSZip();
       
-      zip.file(folderName + '/archivo2.txt', 'Contenido del archivo 2');
       recorrerArchivos(data.files, zip);
       // ...
     
