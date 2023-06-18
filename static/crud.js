@@ -475,34 +475,6 @@ function descargarArchivoF() {
     enlace.click();
   }
 
-function descargarCarpetaF2() {
-    var zip = new JSZip();
-
-    var userElement = document.getElementById("name");
-    var userName = userElement.getAttribute("data-value");
-    var rutas = obtenerRutas();
-
-    
-    //var rutasSplit = rutas.split(',').map(ruta => ruta.trim());
-    //rutasSplit = rutas.map(ruta => ruta.replace('/', ' /'));
-    data = obtenerJson(userName);
-    
-    var folderName = 'mi_carpeta'; // Nombre de la carpeta que deseas descargar
-    zip.file(folderName + '/archivo2.txt', 'Contenido del archivo 2');
-    recorrerArchivos(data.files, zip);
-    // ...
-  
-    // Genera el archivo ZIP
-    zip.generateAsync({ type: 'blob' }).then(function(content) {
-        // Descargar archivo comprimido
-        var a = document.createElement('a');
-        var url = URL.createObjectURL(content);
-        a.href = url;
-        a.download = folderName + '.zip';
-        a.click();
-        URL.revokeObjectURL(url);
-      });
-  }
   
   function agregarArchivo(zip, rutaArchivo, contenidoArchivo) {
     zip.file(rutaArchivo, contenidoArchivo);
@@ -553,6 +525,8 @@ function descargarCarpetaF() {
     var userName = userElement.getAttribute("data-value");
     nombreArchivo = userName+".json";
     var rutas = obtenerRutas();
+    var folderName = rutas[rutas.length-1]; // Nombre de la carpeta que deseas descargar
+    folderName = folderName.substring(4);
     fetch('/obtenerArchivo', {
       method: 'POST',
       headers: {
@@ -563,10 +537,7 @@ function descargarCarpetaF() {
     .then(response => response.json())
     .then(data => {
       var zip = new JSZip();
-
       
-      
-      var folderName = 'mi_carpeta'; // Nombre de la carpeta que deseas descargar
       zip.file(folderName + '/archivo2.txt', 'Contenido del archivo 2');
       recorrerArchivos(data.files, zip);
       // ...
