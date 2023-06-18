@@ -551,14 +551,17 @@ def descargarCarpeta():
 @app.route('/obtenerArchivo', methods=['POST'])
 def obtenerArchivo():
     data = request.get_json()
-    nombre_archivo = data['nombreArchivo']
+    userName = data['userName']
+    rutas = data['rutas']
+    rutas = [ruta.replace('  / ', ' /') for ruta in rutas]
+    rutas = [ruta.strip().lstrip('/').strip() for ruta in rutas if ruta.strip()]
+    rutas.pop(0)
     
-    # Leer el contenido del archivo
-    with open(nombre_archivo, 'r') as archivo:
-        contenido = archivo.read()
+    data = complementos.obtenerJson(userName)
+    contenido = complementos.buscarContenido(data["files"], rutas)
     
     # Devolver el contenido como respuesta JSON
-    return jsonify(contenido=contenido)
+    return contenido
 # ---------------------- ELIMINAR CARPETA ----------------------
 
 @app.route('/eliminarCarpeta')

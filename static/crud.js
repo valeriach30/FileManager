@@ -482,11 +482,11 @@ function descargarCarpetaF2() {
     var userName = userElement.getAttribute("data-value");
     var rutas = obtenerRutas();
 
-    alert(userName);
+    
     //var rutasSplit = rutas.split(',').map(ruta => ruta.trim());
     //rutasSplit = rutas.map(ruta => ruta.replace('/', ' /'));
     data = obtenerJson(userName);
-    alert(data);
+    
     var folderName = 'mi_carpeta'; // Nombre de la carpeta que deseas descargar
     zip.file(folderName + '/archivo2.txt', 'Contenido del archivo 2');
     recorrerArchivos(data.files, zip);
@@ -509,7 +509,6 @@ function descargarCarpetaF2() {
   }
   
 function recorrerArchivos(files, zip, ruta = '') {
-    alert(files);
     files.forEach(function(file) {
       if (file.type !== 'folder') {
         var contenido = file.content;
@@ -553,22 +552,20 @@ function descargarCarpetaF() {
     var userElement = document.getElementById("name");
     var userName = userElement.getAttribute("data-value");
     nombreArchivo = userName+".json";
-    alert(nombreArchivo);
+    var rutas = obtenerRutas();
     fetch('/obtenerArchivo', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ nombreArchivo: nombreArchivo })
+      body: JSON.stringify({ userName: userName , rutas: rutas})
     })
     .then(response => response.json())
     .then(data => {
       var zip = new JSZip();
 
-      var rutas = obtenerRutas();
       
-      alert(data);
-
+      
       var folderName = 'mi_carpeta'; // Nombre de la carpeta que deseas descargar
       zip.file(folderName + '/archivo2.txt', 'Contenido del archivo 2');
       recorrerArchivos(data.files, zip);
