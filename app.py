@@ -584,7 +584,7 @@ def eliminarCarpeta():
     
     # Obtener dropdown
     carpetasRutas = complementos.obtenerCarpetas(data, "", [])
-    
+
     storage = complementos.determinarEspacio(userName)
     return render_template('dashboard.html', email=email, name=userName, folders=folders, 
                            archivos=archivos, rutas = rutas, error=False, storage=storage,
@@ -712,11 +712,17 @@ def compartirCarpeta():
     # Existe
     if(usuarioReceptor):
         # Compartir con el usuario la carpeta
-        complementos.compartirCarpeta(rutas, data, nombreReceptor)
-        storage = complementos.determinarEspacio(usuarioEmisor)
-        return render_template('dashboard.html', email=email, name=usuarioEmisor, folders=folders,
-                            archivos=archivos, rutas = rutas, storage=storage, compartirExito=True,
-                            carpetasRutas=carpetasRutas)
+        compartido = complementos.compartirCarpeta(rutas, data, nombreReceptor)
+        if(compartido):
+            storage = complementos.determinarEspacio(usuarioEmisor)
+            return render_template('dashboard.html', email=email, name=usuarioEmisor, folders=folders,
+                                archivos=archivos, rutas = rutas, storage=storage, compartirExito=True,
+                                carpetasRutas=carpetasRutas)
+        else:
+            storage = complementos.determinarEspacio(usuarioEmisor)
+            return render_template('dashboard.html', email=email, name=usuarioEmisor, folders=folders,
+                            archivos=archivos, rutas = rutas, errorEspacio=True, 
+                            storage=storage, carpetasRutas=carpetasRutas)
     else:
         storage = complementos.determinarEspacio(usuarioEmisor)
         return render_template('dashboard.html', email=email, name=usuarioEmisor, folders=folders,
@@ -753,11 +759,17 @@ def compartirArchivo():
     # Existe
     if(usuarioReceptor):
         # Compartir con el usuario el archivo
-        complementos.compartirArchivo(rutas, data, nombreReceptor, nombreArchivo)
+        compartido = complementos.compartirArchivo(rutas, data, nombreReceptor, nombreArchivo)
         storage = complementos.determinarEspacio(usuarioEmisor)
-        return render_template('dashboard.html', email=email, name=usuarioEmisor, folders=folders,
-                            archivos=archivos, rutas = rutas, storage=storage, compartirExito=True,
-                            carpetasRutas=carpetasRutas)
+        if(compartido):
+            return render_template('dashboard.html', email=email, name=usuarioEmisor, folders=folders,
+                                archivos=archivos, rutas = rutas, storage=storage, compartirExito=True,
+                                carpetasRutas=carpetasRutas)
+        else:
+            storage = complementos.determinarEspacio(usuarioEmisor)
+            return render_template('dashboard.html', email=email, name=usuarioEmisor, folders=folders,
+                            archivos=archivos, rutas = rutas, errorEspacio=True, 
+                            storage=storage, carpetasRutas=carpetasRutas)
     else:
         storage = complementos.determinarEspacio(usuarioEmisor)
         return render_template('dashboard.html', email=email, name=usuarioEmisor, folders=folders,

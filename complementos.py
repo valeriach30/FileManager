@@ -599,21 +599,28 @@ def compartirCarpeta(rutas, data, usuarioReceptor):
 
     # Obtener la carpeta del usuario emisor con las rutas
     carpetaCompartida = buscarContenido(data["files"], rutas)
-    
-    # Obtener la carpeta shared del receptor
-    dataReceptor = obtenerJson(usuarioReceptor)
-    for carpeta in dataReceptor["files"]:
-        if(carpeta["name"] == "Shared"):
-            # Adjuntar la carpeta compartida al receptor
-            carpeta["files"].append(carpetaCompartida)
-    
-    # Escribir el archivo del receptor
-    updated_json = json.dumps(dataReceptor)
+    # Obtener el tamaño de la carpeta
+    size = getSize(carpetaCompartida)
+    actualizado = actualizarEspacio(usuarioReceptor, size)
 
-    # Actualiza el archivo local con el nuevo JSON
-    nombreArchivo = usuarioReceptor + '.json'
-    with open(nombreArchivo, "w") as file:
-        file.write(updated_json)
+    if(actualizado):
+        # Obtener la carpeta shared del receptor
+        dataReceptor = obtenerJson(usuarioReceptor)
+        for carpeta in dataReceptor["files"]:
+            if(carpeta["name"] == "Shared"):
+                # Adjuntar la carpeta compartida al receptor
+                carpeta["files"].append(carpetaCompartida)
+        
+        # Escribir el archivo del receptor
+        updated_json = json.dumps(dataReceptor)
+
+        # Actualiza el archivo local con el nuevo JSON
+        nombreArchivo = usuarioReceptor + '.json'
+        with open(nombreArchivo, "w") as file:
+            file.write(updated_json)
+        return True
+    else:
+        return False
 
 
 # ---------------------- COMPARTIR ARCHIVO ----------------------
@@ -624,21 +631,27 @@ def compartirArchivo(rutas, data, usuarioReceptor, nombreArchivo):
     # Obtener el archivo del emisor
     carpetaEmisor = buscarContenido(data["files"], rutas)
     archivoCompartido = contenidoArchivo(carpetaEmisor, nombreArchivo)
+    sizeArchivo = int(archivoCompartido["size"][:-3])
+    espacioDisponible = actualizarEspacio(usuarioReceptor, sizeArchivo)
+    if(espacioDisponible):
+        # Obtener la carpeta shared del receptor
+        dataReceptor = obtenerJson(usuarioReceptor)
+        for carpeta in dataReceptor["files"]:
+            if(carpeta["name"] == "Shared"):
+                # Adjuntar el archivo al receptor
+                carpeta["files"].append(archivoCompartido)
 
-    # Obtener la carpeta shared del receptor
-    dataReceptor = obtenerJson(usuarioReceptor)
-    for carpeta in dataReceptor["files"]:
-        if(carpeta["name"] == "Shared"):
-            # Adjuntar el archivo al receptor
-            carpeta["files"].append(archivoCompartido)
+        # Escribir el archivo del receptor
+        updated_json = json.dumps(dataReceptor)
 
-    # Escribir el archivo del receptor
-    updated_json = json.dumps(dataReceptor)
-
-    # Actualiza el archivo local con el nuevo JSON
-    nombreArchivo = usuarioReceptor + '.json'
-    with open(nombreArchivo, "w") as file:
-        file.write(updated_json)
+        # Actualiza el archivo local con el nuevo JSON
+        nombreArchivo = usuarioReceptor + '.json'
+        with open(nombreArchivo, "w") as file:
+            file.write(updated_json)
+        
+        return True
+    else:
+        return False
 
 # ---------------------- FUNCIONES STORAGE ----------------------
 
