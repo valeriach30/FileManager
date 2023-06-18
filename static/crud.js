@@ -234,12 +234,26 @@ function cargarCarpetaF(){
 //prueba
 function selectFolder(e) {
     for (var i = 0; i < e.target.files.length; i++) {
-       var s = e.target.files[i].name + '\n';
-       s += e.target.files[i].size + ' Bytes\n';
-       s += e.target.files[i].type;
-       alert(s);
+        var file = e.target.files[i];
+        var s = file.name + '\n';
+
+        // Obtener el nombre de la carpeta
+        var folderPath = file.webkitRelativePath;
+        //var folderName = folderPath.substring(0, folderPath.lastIndexOf('/'));
+
+        if (file.type === '') {
+            // Es una carpeta
+            s += 'Carpeta: ' + folderName;
+        } else {
+            // Es un archivo
+            s += 'Archivo\n';
+            s += folderPath+'\n';
+            s += file.size + ' Bytes\n';
+            s += file.type;
+        }
+        alert(s);
     }
- }
+}
 
 // --------------------------- CARGAR ARCHIVO ---------------------------
 function cargarArchivoF(){
@@ -537,7 +551,7 @@ function descargarCarpetaF() {
     .then(response => response.json())
     .then(data => {
       var zip = new JSZip();
-      
+
       recorrerArchivos(data.files, zip);
       // ...
     
