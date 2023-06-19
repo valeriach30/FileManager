@@ -203,7 +203,6 @@ function cargarCarpetaF(){
                 s += file.size + ' Bytes\n';
                 s += file.type;
             }
-            alert(s);
         }
     });
 
@@ -211,7 +210,7 @@ function cargarCarpetaF(){
 }
 //prueba
 function selectFolder(e) {
-
+    
     var emailElement = document.getElementById("email");  
     var emailValue = emailElement.innerHTML;
     var userElement = document.getElementById("name");
@@ -234,7 +233,6 @@ function selectFolder(e) {
             var elementos = folderName.split("/"); // Divide la cadena en elementos separados por "/"
             var ultimoElemento = elementos.pop(); // Obtiene el último elemento del arreglo resultante
             rutasArray.push(" /"+ ultimoElemento) ;
-            alert(rutasArray[rutasArray.length -2]);
 
             var nombre = rutasArray[rutasArray.length - 1];
             var ultimaRuta = rutasArray[rutasArray.length - 2];
@@ -435,14 +433,9 @@ function closeForm() {
 
 function obtenerRutas(){
     var rutasElement = document.getElementById("rutas");
-    
     var rutasValue = rutasElement.getAttribute("data-value");
-    
-    alert(rutasValue);
     rutasValue = rutasValue.replace(/[\[\]']+/g, '');
     var rutasArray = rutasValue.split(",");
-    //alert(rutasArray);
-    console.log("XD\n");
     return rutasArray
 }
 
@@ -570,7 +563,6 @@ function buscarContenido(files, ruta_carpeta) {
 // ---------------------- OBTENER JSON ----------------------
 //prueba
 function selectFolder(e) {
-
     var emailElement = document.getElementById("email");  
     var emailValue = emailElement.innerHTML;
     var userElement = document.getElementById("name");
@@ -592,9 +584,7 @@ function selectFolder(e) {
 
             var elementos = folderName.split("/"); // Divide la cadena en elementos separados por "/"
             var ultimoElemento = elementos.pop(); // Obtiene el último elemento del arreglo resultante
-            rutasArray.push(" /"+ ultimoElemento) ;
-            alert(rutasArray[rutasArray.length -2]);
-
+            
             var nombre = rutasArray[rutasArray.length - 1];
             var ultimaRuta = rutasArray[rutasArray.length - 2];
         
@@ -604,7 +594,7 @@ function selectFolder(e) {
             params.append('name', userValue);
             params.append('rutas', rutasArray);
             params.append('ruta', ultimoElemento);
-            params.append('nombre', nombre);
+            params.append('nombre', ultimoElemento);
             params.append('dropdown', carpetasRutas);
         
             var url = '/crearCarpeta?' + params.toString();
@@ -614,36 +604,38 @@ function selectFolder(e) {
         if (file.type === '') {
             // Es una carpeta
         } else {
-            //var s = file.name + '\n';
+            var s = file.name + '\n';
             //s += 'Archivo\n';
             var nombreExtension =  file.name.split(".");
-            //s += file.type;
+            s += file.type;
             var ultimaRuta = rutasArray[rutasArray.length - 1];
-            enviarArchivo(file,userValue,emailValue,file.name,nombreExtension.pop(),rutasArray,carpetasRutas,ultimaRuta);
-            alert(s);
+            var contents = e.target.result;
+            enviarArchivo(file,userValue,emailValue,file.name,rutasArray,carpetasRutas,folderName);
         }
        
     }
 }
 //sirve para leer y enviar el contenido de un archivo
-function enviarArchivo(fileEntry,usuario,email,nombreArchivo,extension,ruta,carpetasRutas,ultimaRuta) {
-    var reader = new FileReader();
+function enviarArchivo(fileEntry,usuario,email,nombreArchivo,rutasArray,carpetasRutas,folderName) {
+    var nombreArchivo = nombreArchivo.substring(0, nombreArchivo.length - 4);
+    alert(nombreArchivo);
+    console.log(fileEntry)
+    const reader = new FileReader();
     reader.onload = function(e) {
+        rutasArray.push(" /"+ folderName) ;
         var contents = e.target.result;
-        //var s = e.name + '\n';
-        console.log('Contenido del archivo', fileEntry.name, ':', contents);
         var params = new URLSearchParams();
         params.append('email', email);
         params.append('name', usuario);
         params.append('rutas', rutasArray);
-        params.append('ruta', ultimaRuta);
-        params.append('nombre', nombre);
-        params.append('contenido', contenido);
-        params.append('extension', extension);
+        params.append('nombre', nombreArchivo);
+        params.append('contenido', contents);
+        params.append('extension', "txt");
         params.append('dropdown', carpetasRutas);
         
         var url = '/crearArchivo?' + params.toString();
         window.location.href = url;
+        rutasArray.pop()
     };
     reader.readAsText(fileEntry);
 }

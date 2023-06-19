@@ -227,8 +227,15 @@ def crearArchivo():
 
     # Obtener dropdown
     carpetasRutas = complementos.obtenerDropdown(carpetasRutas, data)
-
+    print(nombreArchivo)
+    print(contenido)
+    print(extension)
+    print(userName)
+    print(rutas)
+    print(data)
+    print("----------------------------------")
     if(len(rutas) != 1):
+        print("entre aca!")
         # Agregar el archivo al json
         error = complementos.nuevoArchivo(nombreArchivo, contenido, extension, userName, rutas, data)
         archivos, folders = complementos.buscar_carpeta(data, rutas)
@@ -480,6 +487,8 @@ def crearCarpeta():
     # Obtener dropdown
     if(len(rutas) != 1):
         # Agregar el archivo al json
+        print("--------------")
+        print(nombreCarpeta)
         error = complementos.nuevaCarpeta(nombreCarpeta, userName, rutas, data)
         archivos, folders = complementos.buscar_carpeta(data, rutas)
     else:
