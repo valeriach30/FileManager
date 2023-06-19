@@ -273,6 +273,7 @@ def eliminar_directorio(files, rutas_directorio):
                 return eliminar_directorio(file["files"], rutas_directorio[1:])
         elif file["type"] == "folder" and "files" in file:
             if eliminar_directorio(file["files"], rutas_directorio):
+                size = 0
                 return True, size
     return False
 
