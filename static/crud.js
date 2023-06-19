@@ -542,7 +542,6 @@ function enviarArchivo(fileEntry,usuario,email,nombreArchivo,rutasArray,carpetas
     var nombreArchivo = nombreArchivo.substring(0, nombreArchivo.length - 4);
     const reader = new FileReader();
     reader.onload = function(e) {
-        alert("Creando archivo!")
         rutasArray.push(" / "+ folderName) ;
         var contents = e.target.result;
         var params = new URLSearchParams();
@@ -553,7 +552,7 @@ function enviarArchivo(fileEntry,usuario,email,nombreArchivo,rutasArray,carpetas
         params.append('contenido', contents);
         params.append('extension', "txt");
         params.append('dropdown', carpetasRutas);
-        alert("Redireccionando")
+        alert("Creando archivo")
         var url = '/crearArchivo?' + params.toString();
         window.location.href = url;
         rutasArray.pop()
