@@ -208,84 +208,6 @@ function cargarCarpetaF(){
 
     input.click();
 }
-//prueba
-function selectFolder(e) {
-    
-    var emailElement = document.getElementById("email");  
-    var emailValue = emailElement.innerHTML;
-    var userElement = document.getElementById("name");
-    var userValue = userElement.getAttribute("data-value");
-
-    var rutasArray = obtenerRutas();
-    var carpetasRutas = dropdown();
-
-    var ultimoDirectorio = "";
-
-    for (var i = 0; i < e.target.files.length; i++) {
-        var file = e.target.files[i];
-        // Obtener el nombre de la carpeta
-        var folderPath = file.webkitRelativePath;
-        var folderName = folderPath.substring(0, folderPath.lastIndexOf('/'));
-        //se entra y se crea la carpeta
-        if(folderName.length !== ultimoDirectorio.length){
-            ultimoDirectorio = folderName;
-
-            var elementos = folderName.split("/"); // Divide la cadena en elementos separados por "/"
-            var ultimoElemento = elementos.pop(); // Obtiene el último elemento del arreglo resultante
-            rutasArray.push(" /"+ ultimoElemento) ;
-
-            var nombre = rutasArray[rutasArray.length - 1];
-            var ultimaRuta = rutasArray[rutasArray.length - 2];
-        
-            // Construir los parámetros de consulta
-            var params = new URLSearchParams();
-            params.append('email', emailValue);
-            params.append('name', userValue);
-            params.append('rutas', rutasArray);
-            params.append('ruta', ultimaRuta);
-            params.append('nombre', nombre);
-            params.append('dropdown', carpetasRutas);
-        
-            var url = '/crearCarpeta?' + params.toString();
-            window.location.href = url;
-
-        }
-        if (file.type === '') {
-            // Es una carpeta
-        } else {
-            var s = file.name + '\n';
-            //s += 'Archivo\n';
-            var nombreExtension =  file.name.split(".");
-            s += file.type;
-            var ultimaRuta = rutasArray[rutasArray.length - 1];
-            enviarArchivo(file,userValue,emailValue,file.name,nombreExtension.pop(),rutasArray,carpetasRutas,ultimaRuta);
-            alert(s);
-        }
-       
-    }
-}
-//sirve para leer y enviar el contenido de un archivo
-function enviarArchivo(fileEntry,usuario,email,nombreArchivo,extension,ruta,carpetasRutas,ultimaRuta) {
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        var contents = e.target.result;
-        //var s = e.name + '\n';
-        console.log('Contenido del archivo', fileEntry.name, ':', contents);
-        var params = new URLSearchParams();
-        params.append('email', email);
-        params.append('name', usuario);
-        params.append('rutas', rutasArray);
-        params.append('ruta', ultimaRuta);
-        params.append('nombre', nombre);
-        params.append('contenido', contenido);
-        params.append('extension', extension);
-        params.append('dropdown', carpetasRutas);
-        
-        var url = '/crearArchivo?' + params.toString();
-        window.location.href = url;
-    };
-    reader.readAsText(fileEntry);
-}
 // --------------------------- CARGAR ARCHIVO ---------------------------
 function cargarArchivoF(){
     //Obtener datos
@@ -618,11 +540,10 @@ function selectFolder(e) {
 //sirve para leer y enviar el contenido de un archivo
 function enviarArchivo(fileEntry,usuario,email,nombreArchivo,rutasArray,carpetasRutas,folderName) {
     var nombreArchivo = nombreArchivo.substring(0, nombreArchivo.length - 4);
-    alert(nombreArchivo);
-    console.log(fileEntry)
     const reader = new FileReader();
     reader.onload = function(e) {
-        rutasArray.push(" /"+ folderName) ;
+        alert("Creando archivo!")
+        rutasArray.push(" / "+ folderName) ;
         var contents = e.target.result;
         var params = new URLSearchParams();
         params.append('email', email);
@@ -632,7 +553,7 @@ function enviarArchivo(fileEntry,usuario,email,nombreArchivo,rutasArray,carpetas
         params.append('contenido', contents);
         params.append('extension', "txt");
         params.append('dropdown', carpetasRutas);
-        
+        alert("Redireccionando")
         var url = '/crearArchivo?' + params.toString();
         window.location.href = url;
         rutasArray.pop()
